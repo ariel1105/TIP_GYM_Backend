@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 class Activity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "activity_id")
     var id:Long? = null
 

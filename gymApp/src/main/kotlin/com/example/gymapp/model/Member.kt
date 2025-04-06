@@ -1,5 +1,7 @@
 package com.example.gymapp.model
 
+import com.example.gymapp.utils.NoRemainingClassesException
+import com.example.gymapp.utils.NonOwnVoucherException
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -8,23 +10,23 @@ import jakarta.persistence.*
 
 @Entity
 class Member {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     var id:Long? = null
 
     var name:String? = null
 
-    @ManyToMany
-    @JoinTable(
-        name = "member_class",
-        joinColumns = [JoinColumn(name = "member_id")],
-        inverseJoinColumns = [JoinColumn(name = "turn_id")]
-    )
-    val enrollments: MutableList<Turn> = mutableListOf()
-
     @OneToMany(mappedBy = "member", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    var classAvailability: MutableList<ClassAvailability> = mutableListOf()
+    var vouchers: MutableList<Voucher> = mutableListOf()
 
+    fun acquire(availability: Voucher) {
+        vouchers.add(availability)
+    }
+
+    fun useVoucher(voucher: Voucher?, turn:Turn): Registration {
+        voucher!!.validate(turn, id)
+        val registration = turn.register(this)
+        return registration
+    }
 }
