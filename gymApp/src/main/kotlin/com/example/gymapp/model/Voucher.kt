@@ -6,7 +6,7 @@ import com.example.gymapp.utils.NonOwnVoucherException
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "member_class_availability")
+@Table(name = "vouchers")
 class Voucher {
 
     @Id

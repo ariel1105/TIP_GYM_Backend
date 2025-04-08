@@ -22,7 +22,6 @@ class Registration {
     @JoinColumn(name = "member_id")
     var member: Member? = null
 
-    @Id
     @ManyToOne
     @JoinColumn(name = "turn_id")
     var turn: Turn? = null

@@ -26,12 +26,8 @@ class MemberTest {
     fun `when a member acquire a pack of classes, increases his amount of vouchers`(){
         val member = MemberBuilder().build()
         val activity = ActivityBuilder().build()
-        val voucher = VoucherBuilder()
-            .withMember(member)
-            .withActivity(activity)
-            .build()
-        member.acquire(voucher)
 
+        member.acquire(activity, 10)
         val vouchers = member.vouchers.size
 
         assertEquals(vouchers, 1, "member should have 1 voucher")
