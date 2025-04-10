@@ -11,7 +11,7 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "registrations")
-class Registration {
+class Registration() {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ class Registration {
     @JoinColumn(name = "turn_id")
     var turn: Turn? = null
 
-    constructor(member: Member, turn: Turn){
+    constructor(member: Member, turn: Turn): this(){
         this.member = member
         this.turn = turn
     }

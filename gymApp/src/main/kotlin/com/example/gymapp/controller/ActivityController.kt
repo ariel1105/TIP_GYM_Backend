@@ -21,6 +21,6 @@ class ActivityController {
 
     @GetMapping("/turns/{activityId}")
     fun getTurns(@PathVariable activityId: String): List<Turn>{
-        return return activityService.getTurnsActivity(activityId.toLong())
+        return activityService.getTurnsActivity(activityId.toLong())
     }
 }

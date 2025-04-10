@@ -5,6 +5,7 @@ import com.example.gymapp.model.Turn
 import com.example.gymapp.repository.ActivityRepository
 import com.example.gymapp.repository.TurnRepository
 import com.example.gymapp.service.ActivityService
+import com.example.gymapp.utils.NoTurnsForActivityException
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -24,6 +25,8 @@ class ActivityServiceImpl : ActivityService{
     }
 
     override fun getTurnsActivity(activityId: Long): List<Turn> {
-        return turnRepository.findByActivityId(activityId)
+        var result = turnRepository.findByActivityId(activityId)
+        if(result.isEmpty()){ throw NoTurnsForActivityException()}
+        return result
     }
 }

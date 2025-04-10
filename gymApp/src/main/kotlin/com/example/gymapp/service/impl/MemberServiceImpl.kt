@@ -4,6 +4,7 @@ import com.example.gymapp.model.Member
 import com.example.gymapp.model.Registration
 import com.example.gymapp.repository.MemberRepository
 import com.example.gymapp.service.MemberService
+import com.example.gymapp.utils.RegistrationDTO
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -20,5 +21,15 @@ class MemberServiceImpl : MemberService{
 
     override fun reserveASpot(memberId: Long, turnId: Long): Registration {
         TODO("Not yet implemented")
+    }
+
+    override fun getMemberRegistrations(memberId: Long): List<RegistrationDTO> {
+        val registration: List<Registration> = memberRepository.getMemberRegistrations(memberId)
+        return registration.map{
+            RegistrationDTO(
+                activityName = it.turn!!.activity!!.name.toString(),
+                startTime = it.turn!!.datetime
+            )
+        }
     }
 }
