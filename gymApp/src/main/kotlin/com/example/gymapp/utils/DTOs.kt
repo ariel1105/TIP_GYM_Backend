@@ -12,3 +12,7 @@ data class MemberDTO(
     val name: String,
     val turns: List<Long>
 )
+
+data class SubscriptionRequestDTO(
+    val turnIds: List<Long>
+)

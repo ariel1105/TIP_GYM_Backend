@@ -11,4 +11,5 @@ interface MemberService {
     fun reserveASpot(memberId: Long, turnId: Long): Registration
     fun getMemberRegistrations(memberId: Long): List<Registration>
     fun subscribe(memberId: Long, turnId: Long): Registration
+    fun subscribeToMultipleTurns(memberId: Long, turnIds: List<Long>): List<Registration>
 }

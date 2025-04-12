@@ -49,4 +49,15 @@ class MemberServiceImpl : MemberService{
         registrationRepository.save(registration)
         return registration
     }
+
+    override fun subscribeToMultipleTurns(memberId: Long, turnIds: List<Long>): List<Registration> {
+        val member = memberRepository.findById(memberId).orElseThrow()
+        val turns = turnRepository.findAllById(turnIds)
+
+        val registrations = turns.map { turn ->
+            member.subscribe(turn)
+        }
+
+        return registrationRepository.saveAll(registrations)
+    }
 }
