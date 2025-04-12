@@ -38,4 +38,10 @@ class Member {
         val registration = turn.register(this)
         return registration
     }
+
+    //Provisorio se tiene q utilizar con voucher
+    fun subscribe(turn: Turn): Registration {
+        val registration = turn.register(this)
+        return registration
+    }
 }
