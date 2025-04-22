@@ -7,9 +7,13 @@ import com.example.gymapp.repository.RegistrationRepository
 import com.example.gymapp.repository.TurnRepository
 import com.example.gymapp.service.MemberService
 import com.example.gymapp.utils.MemberDTO
-import com.example.gymapp.utils.RegistrationDTO
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import kotlin.jvm.optionals.getOrNull
 
@@ -59,5 +63,21 @@ class MemberServiceImpl : MemberService{
         }
 
         return registrationRepository.saveAll(registrations)
+    }
+
+    override fun findUserById(id: Long): Member {
+        return memberRepository.findById(id).get()
+    }
+
+    override fun findMemberByUsername(username: String): Member {
+        return memberRepository.findByUsername(username).get()
+    }
+
+    override fun loadUserByUsername(username: String?): UserDetails? {
+        val member: Member = memberRepository.findByUsername(username!!).getOrNull()
+            ?: throw UsernameNotFoundException("User with user $username does not exist.")
+
+        val authorities: Set<GrantedAuthority> = listOf(SimpleGrantedAuthority("ROLE_USER") ).toSet()
+        return User(member.username, member.password, true, true, true, true, authorities)
     }
 }

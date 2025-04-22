@@ -18,6 +18,8 @@ class Member {
     var id:Long? = null
 
     var name:String? = null
+    var username:String? = null
+    var password:String? = null
 
     @OneToMany(mappedBy = "member", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     var vouchers: MutableList<Voucher> = mutableListOf()

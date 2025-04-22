@@ -16,3 +16,8 @@ data class MemberDTO(
 data class SubscriptionRequestDTO(
     val turnIds: List<Long>
 )
+
+data class LoginDTO(
+    val username: String,
+    val password: String
+)

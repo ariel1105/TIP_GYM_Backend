@@ -8,6 +8,9 @@ plugins {
 group = "com.example"
 version = "0.0.1-SNAPSHOT"
 val mockitoVersion = "3.10.0"
+val jsonWebTokenVersion = "0.12.5"
+val springBootStarterVersion = "3.2.4"
+val springSecurityVersion = "6.2.3"
 
 java {
 	toolchain {
@@ -26,6 +29,9 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("mysql:mysql-connector-java:8.0.33")
+	implementation("org.springframework.boot:spring-boot-starter-security:${springBootStarterVersion}")
+	implementation("io.jsonwebtoken:jjwt-api:${jsonWebTokenVersion}")
+	implementation("io.jsonwebtoken:jjwt-root:${jsonWebTokenVersion}")
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
