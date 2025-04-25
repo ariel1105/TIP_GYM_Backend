@@ -10,16 +10,22 @@ class MemberBuilder(){
 
     private var id: Long? = null
     private var name: String? = null
+    private var username: String? = null
+    private var password: String? = null
 
     fun build(): Member{
         val member = Member()
         member.id = id
         member.name = name
+        member.password = password
+        member.username = username
         return member
     }
 
     fun withId(id: Long) = apply { this.id = id }
     fun withName(name: String) = apply { this.name = name }
+    fun withUsername(username: String) = apply{this.username = username}
+    fun withPassword(password: String) = apply{this.password = password}
 }
 
 class ActivityBuilder(){

@@ -29,7 +29,6 @@ class SecurityConfig {
             .csrf { it.disable() }
             .headers { header -> header.frameOptions { it.disable() }}
             .authorizeHttpRequests {
-
                 it.requestMatchers("/login/**", "/register/**").permitAll() }
             .authorizeHttpRequests { it.anyRequest().authenticated() }
 //            .authorizeHttpRequests { conf ->

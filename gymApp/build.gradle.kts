@@ -8,7 +8,7 @@ plugins {
 group = "com.example"
 version = "0.0.1-SNAPSHOT"
 val mockitoVersion = "3.10.0"
-val jsonWebTokenVersion = "0.12.5"
+val jsonWebTokenVersion = "0.11.5"
 val springBootStarterVersion = "3.2.4"
 val springSecurityVersion = "6.2.3"
 
@@ -31,6 +31,8 @@ dependencies {
 	implementation("mysql:mysql-connector-java:8.0.33")
 	implementation("org.springframework.boot:spring-boot-starter-security:${springBootStarterVersion}")
 	implementation("io.jsonwebtoken:jjwt-api:${jsonWebTokenVersion}")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-root:${jsonWebTokenVersion}")
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")

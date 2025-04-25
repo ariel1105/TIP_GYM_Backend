@@ -17,20 +17,21 @@ class JwtService {
     fun generateToken(user: Member): String{
         var token: String = Jwts
             .builder()
-            .subject(user.username)
-            .issuedAt(Date(System.currentTimeMillis()))
-            .expiration(Date(System.currentTimeMillis() + 24*60*60*1000))
+            //.subject(user.username)
+            .setSubject(user.username)
+            .setIssuedAt(Date(System.currentTimeMillis()))
+            .setExpiration(Date(System.currentTimeMillis() + 24*60*60*1000))
             .signWith(getSigninKey())
             .compact()
         return token
     }
     fun extractAllClaims(token: String): Claims {
         return Jwts
-            .parser()
-            .verifyWith(getSigninKey())
+            .parserBuilder()
+            .setSigningKey(getSigninKey())
             .build()
-            .parseSignedClaims(token)
-            .payload
+            .parseClaimsJws(token)
+            .body
     }
     fun <T> extractClaim(token: String, resolver: (claim: Claims) -> T): T{
         val claims: Claims = extractAllClaims(token)
