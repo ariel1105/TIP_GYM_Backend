@@ -1,5 +1,6 @@
 package com.example.gymapp.controller
 
+import com.example.gymapp.model.Member
 import com.example.gymapp.model.Registration
 import com.example.gymapp.service.MemberService
 import com.example.gymapp.utils.MemberDTO
@@ -47,6 +48,12 @@ class MemberController {
     fun getMember(@PathVariable memberId: String): MemberDTO{
         return memberService.getMember(memberId.toLong())
     }
+
+    @GetMapping("/member/username/{username}")
+    fun getMemberByUsername(@PathVariable username: String): Member {
+        return memberService.findMemberByUsername(username)
+    }
+
 
 
 }

@@ -32,6 +32,7 @@ class MemberServiceImpl : MemberService{
 
     override fun getMember(memberId: Long): MemberDTO {
         val member = memberRepository.findById(memberId).getOrNull()
+        //agregar manejo de error si el usuario no existe
         val registrations = memberRepository.getMemberRegistrations(memberId).map {
             it.turn!!.id!!.toLong()
         }

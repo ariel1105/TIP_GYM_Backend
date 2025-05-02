@@ -25,7 +25,7 @@ class ActivityServiceImpl : ActivityService{
     }
 
     override fun getTurnsActivity(activityId: Long): List<Turn> {
-        var result = turnRepository.findByActivityId(activityId)
+        var result = turnRepository.findByActivityIdAndDatetimeAfter(activityId)
         if(result.isEmpty()){ throw NoTurnsForActivityException()}
         return result
     }
