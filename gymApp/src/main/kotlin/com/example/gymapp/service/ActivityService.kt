@@ -2,9 +2,25 @@ package com.example.gymapp.service
 
 import com.example.gymapp.model.Activity
 import com.example.gymapp.model.Turn
+import com.example.gymapp.repository.ActivityRepository
+import com.example.gymapp.repository.TurnRepository
+import com.example.gymapp.utils.NoTurnsForActivityException
+import jakarta.transaction.Transactional
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
 
-interface ActivityService {
+@Service
+@Transactional
+class ActivityService{
 
-    fun getActivities(): List<Activity>
-    fun getTurnsActivity(activityId: Long): List<Turn>
+    @Autowired
+    lateinit var activityRepository: ActivityRepository
+
+    @Autowired
+    lateinit var turnRepository: TurnRepository
+
+    fun getActivities(): List<Activity> {
+        return activityRepository.findAll()
+    }
+
 }

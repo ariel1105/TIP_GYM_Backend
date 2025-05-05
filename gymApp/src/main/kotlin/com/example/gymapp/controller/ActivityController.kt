@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.Date
 
 @RestController
 class ActivityController {
@@ -19,8 +22,5 @@ class ActivityController {
         return activityService.getActivities()
     }
 
-    @GetMapping("/turns/{activityId}")
-    fun getTurns(@PathVariable activityId: String): List<Turn>{
-        return activityService.getTurnsActivity(activityId.toLong())
-    }
+
 }
