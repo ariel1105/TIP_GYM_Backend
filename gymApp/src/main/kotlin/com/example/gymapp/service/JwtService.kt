@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.util.Date
 import javax.crypto.SecretKey
+import kotlin.text.substring
 
 @Service
 class JwtService {
@@ -19,6 +20,7 @@ class JwtService {
             .builder()
             //.subject(user.username)
             .setSubject(user.username)
+            .claim("id", user.id)
             .setIssuedAt(Date(System.currentTimeMillis()))
             .setExpiration(Date(System.currentTimeMillis() + 24*60*60*1000))
             .signWith(getSigninKey())
@@ -40,6 +42,9 @@ class JwtService {
 
     fun extractUsername(token: String): String {
         return extractClaim(token, Claims::getSubject)
+    }
+    fun extractId(token:String): String {
+        return extractAllClaims(token.substring(7))["id"].toString()
     }
 
     fun getSigninKey(): SecretKey {

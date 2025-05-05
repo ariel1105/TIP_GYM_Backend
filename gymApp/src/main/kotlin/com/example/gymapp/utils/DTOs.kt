@@ -8,6 +8,14 @@ data class RegistrationDTO(
     val startTime: LocalDateTime?
 )
 
+data class TurnDTO(
+    val id: Long?,
+    val datetime: LocalDateTime?,
+    val capacity: Int?,
+    val enrolled: Int?,
+    val activityName: String?
+)
+
 data class MemberDTO(
     val name: String,
     val turns: List<Long>
