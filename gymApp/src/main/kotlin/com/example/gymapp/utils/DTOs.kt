@@ -17,8 +17,10 @@ data class TurnDTO(
 )
 
 data class MemberDTO(
-    val name: String,
-    val turns: List<Long>
+    val name: String?,
+    val username: String?,
+    val id: Long?,
+    val turns: List<Long>,
 )
 
 data class SubscriptionRequestDTO(

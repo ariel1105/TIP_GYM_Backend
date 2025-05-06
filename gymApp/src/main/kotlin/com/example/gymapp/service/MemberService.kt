@@ -31,12 +31,12 @@ class MemberService: UserDetailsService{
     lateinit var registrationRepository: RegistrationRepository
 
     fun getMember(memberId: Long): MemberDTO {
-        val member = memberRepository.findById(memberId).getOrNull()
+        val member = memberRepository.findById(memberId).orElseThrow()
         //agregar manejo de error si el usuario no existe
         val registrations = memberRepository.getMemberRegistrations(memberId).map {
             it.turn!!.id!!.toLong()
         }
-        return MemberDTO(member!!.name.toString(), registrations)
+        return MemberDTO(member!!.name, member.username, member.id, registrations)
     }
 
     fun reserveASpot(memberId: Long, turnId: Long): Registration {

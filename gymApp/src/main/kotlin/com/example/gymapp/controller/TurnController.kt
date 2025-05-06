@@ -17,8 +17,10 @@ class TurnController {
     lateinit var turnService: TurnService
 
     @GetMapping("/turns/{activityId}")
-    fun getTurns(@PathVariable activityId: String): List<Turn>{
-        return turnService.getTurnsActivity(activityId.toLong())
+    fun getTurns(@PathVariable activityId: String): List<TurnDTO>{
+        return turnService.getTurnsActivity(activityId.toLong()).map {
+            TurnDTO(it.id, it.datetime, it.capacity, it.enrolled, it.activity!!.name)
+        }
     }
 
     @GetMapping("/turns/week")

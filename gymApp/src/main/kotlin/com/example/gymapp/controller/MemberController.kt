@@ -25,9 +25,9 @@ class MemberController {
     @Autowired
     lateinit var jwtService: JwtService
 
-    @GetMapping("/member/registrations/{memberId}")
-    fun getRegistrations(@PathVariable memberId: String, request: HttpServletRequest): List<RegistrationDTO> {
-        val id = jwtService.extractId(request.getHeader("Authorization"))
+    @GetMapping("/member/registrations")
+    fun getRegistrations(request: HttpServletRequest): List<RegistrationDTO> {
+        val memberId = jwtService.extractId(request.getHeader("Authorization"))
 
         val registrations = memberService.getMemberRegistrations(memberId.toLong())
         return registrations.map{
@@ -39,10 +39,10 @@ class MemberController {
         }
     }
 
-    @PostMapping("/member/subscribe/{memberId}")
-    fun subscribe(@PathVariable memberId: String, @RequestBody request: SubscriptionRequestDTO): List<RegistrationDTO> {
-        //val registration = memberService.subscribe(memberId.toLong())
-        val registrations = memberService.subscribeToMultipleTurns(memberId.toLong(), request.turnIds)
+    @PostMapping("/member/subscribe")
+    fun subscribe(request: HttpServletRequest, @RequestBody body: SubscriptionRequestDTO): List<RegistrationDTO> {
+        val memberId = jwtService.extractId(request.getHeader("Authorization"))
+        val registrations = memberService.subscribeToMultipleTurns(memberId.toLong(), body.turnIds)
         return registrations.map {
             RegistrationDTO(
                 it.turn!!.id,
@@ -52,8 +52,9 @@ class MemberController {
         }
     }
 
-    @GetMapping("/member/{memberId}")
-    fun getMember(@PathVariable memberId: String): MemberDTO{
+    @GetMapping("/member")
+    fun getMember(request: HttpServletRequest): MemberDTO{
+        val memberId = jwtService.extractId(request.getHeader("Authorization"))
         return memberService.getMember(memberId.toLong())
     }
 
