@@ -27,16 +27,27 @@ class AuthService {
     lateinit var authenticationManager: AuthenticationManager
 
     fun register(user: Member): String {
-        try{
-            user.password = passwordEncoder.encode(user.password)
-            userRepository.save(user)
-            return jwtService.generateToken(user)
+        if (user.name.isNullOrBlank() || user.username.isNullOrBlank() || user.password.isNullOrBlank()) {
+            throw IllegalArgumentException("Todos los campos son obligatorios")
         }
-        catch (e: DataIntegrityViolationException){
+
+        if (user.password!!.length < 6) {
+            throw IllegalArgumentException("La contraseña debe tener al menos 6 caracteres")
+        }
+
+        if (!user.username!!.matches(Regex("^[a-zA-Z0-9_]+$"))) {
+            throw IllegalArgumentException("El nombre de usuario solo puede contener letras, números y guiones bajos")
+        }
+
+        if (userRepository.existsByUsername(user.username!!)) {
             throw UsernameAlreadyTakenException(user.username!!)
         }
 
+        user.password = passwordEncoder.encode(user.password)
+        userRepository.save(user)
+        return jwtService.generateToken(user)
     }
+
 
     fun login(loginDTO: LoginDTO): String {
         authenticationManager.authenticate(
