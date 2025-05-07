@@ -36,7 +36,7 @@ data class LoginDTO(
 data class RegisterDTO(
     @field:NotBlank(message = "El nombre no puede estar vacío")
     val name: String,
-    @field:Pattern(regexp = "^[a-zA-Z0-9]$", message = "El usuario debe tener caracteres alfanuméricos")
+    @field:Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El usuario debe tener caracteres alfanuméricos")
     val username: String,
     @field:Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     val password: String

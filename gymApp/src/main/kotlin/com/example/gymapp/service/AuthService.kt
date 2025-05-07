@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.sql.SQLNonTransientException
+import java.util.function.Supplier
 
 @Service
 @Transactional
@@ -35,18 +36,21 @@ class AuthService {
         }catch (e : DataIntegrityViolationException){
             throw UsernameAlreadyTakenException(user.username!!)
         }
-
     }
 
 
     fun login(loginDTO: LoginDTO): String {
-        authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(
-                loginDTO.username,
-                loginDTO.password
+        try{
+            authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken(
+                    loginDTO.username,
+                    loginDTO.password
+                )
             )
-        )
-        val user: Member? = userRepository.findByUsername(loginDTO.username).get()
-        return jwtService.generateToken(user!!)
+        }catch (e: Exception){
+            throw IllegalArgumentException("Credenciales inválidas")
+        }
+        val user: Member = userRepository.findByUsername(loginDTO.username).get()
+        return jwtService.generateToken(user)
     }
 }
