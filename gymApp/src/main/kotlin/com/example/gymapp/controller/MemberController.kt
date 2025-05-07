@@ -58,11 +58,4 @@ class MemberController {
         return memberService.getMember(memberId.toLong())
     }
 
-    @GetMapping("/member/username/{username}")
-    fun getMemberByUsername(@PathVariable username: String): Member {
-        return memberService.findMemberByUsername(username)
-    }
-
-
-
 }

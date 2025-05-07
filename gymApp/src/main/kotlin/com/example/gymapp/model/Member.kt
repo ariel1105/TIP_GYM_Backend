@@ -10,6 +10,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.*
 import jdk.jfr.DataAmount
 
+
 @Entity
 class Member {
     @Id
@@ -17,7 +18,9 @@ class Member {
     @Column(name = "member_id")
     var id:Long? = null
 
+    @Column(nullable = false)
     var name:String? = null
+    @Column(nullable = false, unique = true)
     var username:String? = null
     var password:String? = null
 

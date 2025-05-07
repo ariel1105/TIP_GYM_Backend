@@ -4,6 +4,7 @@ import com.example.gymapp.service.AuthService
 import com.example.gymapp.utils.LoginDTO
 import com.example.gymapp.utils.MemberBuilder
 import com.example.gymapp.utils.RegisterDTO
+import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -23,7 +24,7 @@ class AuthController {
     }
 
     @PostMapping("/register")
-    fun register(@RequestBody registerDto: RegisterDTO): ResponseEntity<String> {
+    fun register(@RequestBody @Valid registerDto: RegisterDTO): ResponseEntity<String> {
         val member = MemberBuilder()
             .withName(registerDto.name)
             .withUsername(registerDto.username)

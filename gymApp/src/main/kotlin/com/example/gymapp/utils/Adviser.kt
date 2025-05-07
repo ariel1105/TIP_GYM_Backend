@@ -2,6 +2,7 @@ package com.example.gymapp.utils
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
@@ -23,5 +24,12 @@ class Adviser {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidationExceptions(e: MethodArgumentNotValidException): ResponseEntity<String> {
+        val firstErrorMessage = e.bindingResult
+            .fieldErrors
+            .firstOrNull()?.defaultMessage ?: "Error de validación"
+        return ResponseEntity.badRequest().body(firstErrorMessage)
+    }
 
 }
