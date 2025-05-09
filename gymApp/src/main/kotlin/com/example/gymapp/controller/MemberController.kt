@@ -30,13 +30,13 @@ class MemberController {
 
     @GetMapping
     fun getMember(request: HttpServletRequest): MemberDTO{
-        val memberId = jwtService.extractId(request.getHeader("Authorization"))
+        val memberId = getMemberIdFromRequest(request)
         return memberService.getMember(memberId.toLong())
     }
 
     @GetMapping("/registrations")
     fun getRegistrations(request: HttpServletRequest): List<RegistrationDTO> {
-        val memberId = jwtService.extractId(request.getHeader("Authorization"))
+        val memberId = getMemberIdFromRequest(request)
 
         val registrations = memberService.getMemberRegistrations(memberId.toLong())
         return registrations.map{
@@ -50,7 +50,7 @@ class MemberController {
 
     @PostMapping("/subscribe")
     fun subscribe(request: HttpServletRequest, @RequestBody body: SubscriptionRequestDTO): List<RegistrationDTO> {
-        val memberId = jwtService.extractId(request.getHeader("Authorization"))
+        val memberId = getMemberIdFromRequest(request)
         println(memberId)
         val registrations = memberService.subscribeToMultipleTurns(memberId.toLong(), body.turnIds)
         return registrations.map {
@@ -64,9 +64,13 @@ class MemberController {
 
     @DeleteMapping("/unsubscribe/{turnId}")
     fun unsubscribe(request: HttpServletRequest, @PathVariable turnId: Long): String{
-        val memberId = jwtService.extractId(request.getHeader("Authorization")).toLong()
+        val memberId = getMemberIdFromRequest(request)
         memberService.unsubscribeFromTurn(memberId, turnId)
         return "Has sido removido de este turno"
+    }
+
+    private fun getMemberIdFromRequest(request: HttpServletRequest): Long {
+        return jwtService.extractId(request.getHeader("Authorization")).toLong()
     }
 
 }

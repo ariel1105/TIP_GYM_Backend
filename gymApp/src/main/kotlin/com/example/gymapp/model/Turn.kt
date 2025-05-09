@@ -2,9 +2,11 @@ package com.example.gymapp.model
 
 import com.example.gymapp.utils.MemberAlreadyRegisteredException
 import com.example.gymapp.utils.MemberNotRegisteredInTurnException
+import com.example.gymapp.utils.PassedTimeOnTurnException
 import com.example.gymapp.utils.TurnAlreadyFullException
 import jakarta.persistence.*
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @Entity
 class Turn {
@@ -39,7 +41,10 @@ class Turn {
     fun remove(member: Member){
         val registration = registrations.find { it.member?.id == member.id }
             ?: throw MemberNotRegisteredInTurnException()
-
+        val now = LocalDateTime.now()
+        if (datetime!!.isBefore(now) || ChronoUnit.HOURS.between(now, datetime) < 24) {
+            throw PassedTimeOnTurnException("No se puede cancelar el turno con menos de 24 horas de anticipación.")
+        }
         registrations.remove(registration)
         enrolled--
     }

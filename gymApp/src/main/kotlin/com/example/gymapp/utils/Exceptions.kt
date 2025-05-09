@@ -8,3 +8,4 @@ class NoTurnsForActivityException(): RuntimeException("No hay turnos para esta a
 class UsernameAlreadyTakenException(val username: String) : RuntimeException("El usuario '$username' ya está registrado")
 class MemberAlreadyRegisteredException() : RuntimeException("Ya estas registrado en este turno")
 class MemberNotRegisteredInTurnException() : RuntimeException("No estas registrado en este turno")
+class PassedTimeOnTurnException() : RuntimeException("Ya pasó el tiempo límite para la cancelación del turno")
