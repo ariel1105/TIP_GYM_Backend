@@ -6,3 +6,5 @@ class NoRemainingClassesException(): RuntimeException("Has utilizado todas las c
 class TurnAlreadyFullException(): RuntimeException("No puedes reservar porque el turno ya está lleno")
 class NoTurnsForActivityException(): RuntimeException("No hay turnos para esta actividad, prueba mas tarde")
 class UsernameAlreadyTakenException(val username: String) : RuntimeException("El usuario '$username' ya está registrado")
+class MemberAlreadyRegisteredException() : RuntimeException("Ya estas registrado en este turno")
+class MemberNotRegisteredInTurnException() : RuntimeException("No estas registrado en este turno")

@@ -1,5 +1,7 @@
 package com.example.gymapp.model
 
+import com.example.gymapp.utils.MemberAlreadyRegisteredException
+import com.example.gymapp.utils.MemberNotRegisteredInTurnException
 import com.example.gymapp.utils.TurnAlreadyFullException
 import jakarta.persistence.*
 import java.time.LocalDateTime
@@ -20,9 +22,25 @@ class Turn {
     @JoinColumn(name = "activity_id") // FK en la tabla Turn
     var activity: Activity? = null
 
+    @OneToMany(mappedBy = "turn", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var registrations: MutableList<Registration> = mutableListOf()
+
     fun register(member: Member): Registration {
-        if(enrolled == capacity){ throw TurnAlreadyFullException() }
+        if (enrolled == capacity) { throw TurnAlreadyFullException() }
+        if (registrations.any { it.member?.id == member.id }) {
+            throw MemberAlreadyRegisteredException()
+        }
+        val registration = Registration(member, this)
+        registrations.add(registration)
         enrolled++
-        return Registration(member, this)
+        return registration
+    }
+
+    fun remove(member: Member){
+        val registration = registrations.find { it.member?.id == member.id }
+            ?: throw MemberNotRegisteredInTurnException()
+
+        registrations.remove(registration)
+        enrolled--
     }
 }

@@ -10,14 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-@Transactional
 class ActivityService{
 
     @Autowired
     lateinit var activityRepository: ActivityRepository
-
-    @Autowired
-    lateinit var turnRepository: TurnRepository
 
     fun getActivities(): List<Activity> {
         return activityRepository.findAll()

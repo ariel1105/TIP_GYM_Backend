@@ -11,13 +11,16 @@ import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
+@RequestMapping("/member")
 class MemberController {
 
     @Autowired
@@ -25,7 +28,13 @@ class MemberController {
     @Autowired
     lateinit var jwtService: JwtService
 
-    @GetMapping("/member/registrations")
+    @GetMapping
+    fun getMember(request: HttpServletRequest): MemberDTO{
+        val memberId = jwtService.extractId(request.getHeader("Authorization"))
+        return memberService.getMember(memberId.toLong())
+    }
+
+    @GetMapping("/registrations")
     fun getRegistrations(request: HttpServletRequest): List<RegistrationDTO> {
         val memberId = jwtService.extractId(request.getHeader("Authorization"))
 
@@ -39,9 +48,10 @@ class MemberController {
         }
     }
 
-    @PostMapping("/member/subscribe")
+    @PostMapping("/subscribe")
     fun subscribe(request: HttpServletRequest, @RequestBody body: SubscriptionRequestDTO): List<RegistrationDTO> {
         val memberId = jwtService.extractId(request.getHeader("Authorization"))
+        println(memberId)
         val registrations = memberService.subscribeToMultipleTurns(memberId.toLong(), body.turnIds)
         return registrations.map {
             RegistrationDTO(
@@ -52,10 +62,11 @@ class MemberController {
         }
     }
 
-    @GetMapping("/member")
-    fun getMember(request: HttpServletRequest): MemberDTO{
-        val memberId = jwtService.extractId(request.getHeader("Authorization"))
-        return memberService.getMember(memberId.toLong())
+    @DeleteMapping("/unsubscribe/{turnId}")
+    fun unsubscribe(request: HttpServletRequest, @PathVariable turnId: Long): String{
+        val memberId = jwtService.extractId(request.getHeader("Authorization")).toLong()
+        memberService.unsubscribeFromTurn(memberId, turnId)
+        return "Has sido removido de este turno"
     }
 
 }

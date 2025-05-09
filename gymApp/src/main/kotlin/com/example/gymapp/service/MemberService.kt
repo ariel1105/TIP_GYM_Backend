@@ -39,21 +39,17 @@ class MemberService: UserDetailsService{
         return MemberDTO(member!!.name, member.username, member.id, registrations)
     }
 
-    fun reserveASpot(memberId: Long, turnId: Long): Registration {
-        TODO("Not yet implemented")
-    }
-
     fun getMemberRegistrations(memberId: Long): List<Registration> {
         return memberRepository.getMemberRegistrations(memberId)
     }
 
-    fun subscribe(memberId: Long, turnId: Long): Registration {
-        val member = memberRepository.findById(memberId).getOrNull()
-        val turn = turnRepository.findById(turnId).getOrNull()
-        val registration = member!!.subscribe(turn!!)
-        registrationRepository.save(registration)
-        return registration
-    }
+//    fun subscribe(memberId: Long, turnId: Long): Registration {
+//        val member = memberRepository.findById(memberId).getOrNull()
+//        val turn = turnRepository.findById(turnId).getOrNull()
+//        val registration = member!!.subscribe(turn!!)
+//        registrationRepository.save(registration)
+//        return registration
+//    }
 
     fun subscribeToMultipleTurns(memberId: Long, turnIds: List<Long>): List<Registration> {
         val member = memberRepository.findById(memberId).orElseThrow()
@@ -66,13 +62,21 @@ class MemberService: UserDetailsService{
         return registrationRepository.saveAll(registrations)
     }
 
-    fun findUserById(id: Long): Member {
-        return memberRepository.findById(id).get()
+    fun unsubscribeFromTurn(memberId: Long, turnId: Long) {
+        val member = memberRepository.findById(memberId).orElseThrow()
+        val turn = turnRepository.findById(turnId).orElseThrow()
+
+        member.unsubscribe(turn)
+        registrationRepository.deleteByMemberIdAndTurnId(memberId, turnId)
     }
 
-    fun findMemberByUsername(username: String): Member {
-        return memberRepository.findByUsername(username).get()
-    }
+//    fun findUserById(id: Long): Member {
+//        return memberRepository.findById(id).get()
+//    }
+//
+//    fun findMemberByUsername(username: String): Member {
+//        return memberRepository.findByUsername(username).get()
+//    }
 
     override fun loadUserByUsername(username: String?): UserDetails? {
         val member: Member = memberRepository.findByUsername(username!!).getOrNull()

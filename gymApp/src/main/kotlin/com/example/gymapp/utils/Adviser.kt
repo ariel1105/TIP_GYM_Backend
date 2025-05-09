@@ -24,6 +24,11 @@ class Adviser {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
     }
 
+    @ExceptionHandler(Exception::class)
+    fun handleIllegalArgumentException(e: Exception): ResponseEntity<String> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationExceptions(e: MethodArgumentNotValidException): ResponseEntity<String> {
         val firstErrorMessage = e.bindingResult

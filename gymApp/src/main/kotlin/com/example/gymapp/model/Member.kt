@@ -38,15 +38,18 @@ class Member {
         return voucher
     }
 
-    fun useVoucher(voucher: Voucher?, turn:Turn): Registration {
-        voucher!!.validate(turn, id)
+//    fun useVoucher(voucher: Voucher?, turn:Turn): Registration {
+//        voucher!!.validate(turn, id)
+//        val registration = turn.register(this)
+//        return registration
+//    }
+
+    fun subscribe(turn: Turn): Registration {
         val registration = turn.register(this)
         return registration
     }
 
-    //Provisorio se tiene q utilizar con voucher
-    fun subscribe(turn: Turn): Registration {
-        val registration = turn.register(this)
-        return registration
+    fun unsubscribe(turn: Turn){
+        turn.remove(this)
     }
 }

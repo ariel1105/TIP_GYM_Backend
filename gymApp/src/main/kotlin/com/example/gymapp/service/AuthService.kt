@@ -15,7 +15,6 @@ import java.sql.SQLNonTransientException
 import java.util.function.Supplier
 
 @Service
-@Transactional
 class AuthService {
 
 
@@ -28,6 +27,7 @@ class AuthService {
     @Autowired
     lateinit var authenticationManager: AuthenticationManager
 
+    @Transactional
     fun register(user: Member): String {
         try{
             user.password = passwordEncoder.encode(user.password)
