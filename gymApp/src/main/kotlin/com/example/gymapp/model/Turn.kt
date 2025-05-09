@@ -43,7 +43,7 @@ class Turn {
             ?: throw MemberNotRegisteredInTurnException()
         val now = LocalDateTime.now()
         if (datetime!!.isBefore(now) || ChronoUnit.HOURS.between(now, datetime) < 24) {
-            throw PassedTimeOnTurnException("No se puede cancelar el turno con menos de 24 horas de anticipación.")
+            throw PassedTimeOnTurnException()
         }
         registrations.remove(registration)
         enrolled--
