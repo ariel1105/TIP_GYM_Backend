@@ -1,16 +1,13 @@
 package com.example.gymapp.controller
 
-import com.example.gymapp.model.Member
-import com.example.gymapp.model.Registration
 import com.example.gymapp.service.JwtService
 import com.example.gymapp.service.MemberService
 import com.example.gymapp.utils.MemberDTO
 import com.example.gymapp.utils.RegistrationDTO
 import com.example.gymapp.utils.SubscriptionRequestDTO
+import com.example.gymapp.utils.VoucherRequestDTO
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.context.SecurityContext
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -51,7 +48,6 @@ class MemberController {
     @PostMapping("/subscribe")
     fun subscribe(request: HttpServletRequest, @RequestBody body: SubscriptionRequestDTO): List<RegistrationDTO> {
         val memberId = getMemberIdFromRequest(request)
-        println(memberId)
         val registrations = memberService.subscribeToMultipleTurns(memberId.toLong(), body.turnIds)
         return registrations.map {
             RegistrationDTO(
@@ -67,6 +63,13 @@ class MemberController {
         val memberId = getMemberIdFromRequest(request)
         memberService.unsubscribeFromTurn(memberId, turnId)
         return "Has sido removido de este turno"
+    }
+
+    @PostMapping("/acquire")
+    fun acquireVoucher(request: HttpServletRequest, @RequestBody vouchers: List<VoucherRequestDTO>): String{
+        val memberId = getMemberIdFromRequest(request)
+        memberService.acquireVoucher(memberId, vouchers)
+        return "ya tienes tus vouchers!"
     }
 
     private fun getMemberIdFromRequest(request: HttpServletRequest): Long {

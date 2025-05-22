@@ -28,6 +28,11 @@ data class SubscriptionRequestDTO(
     val turnIds: List<Long>
 )
 
+data class VoucherRequestDTO(
+    val activityId: Long?,
+    val amount: Int?
+)
+
 data class LoginDTO(
     val username: String,
     val password: String

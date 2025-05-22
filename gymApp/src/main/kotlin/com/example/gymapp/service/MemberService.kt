@@ -2,10 +2,12 @@ package com.example.gymapp.service
 
 import com.example.gymapp.model.Member
 import com.example.gymapp.model.Registration
+import com.example.gymapp.repository.ActivityRepository
 import com.example.gymapp.repository.MemberRepository
 import com.example.gymapp.repository.RegistrationRepository
 import com.example.gymapp.repository.TurnRepository
 import com.example.gymapp.utils.MemberDTO
+import com.example.gymapp.utils.VoucherRequestDTO
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.GrantedAuthority
@@ -29,6 +31,9 @@ class MemberService: UserDetailsService{
 
     @Autowired
     lateinit var registrationRepository: RegistrationRepository
+
+    @Autowired
+    lateinit var activityRepository: ActivityRepository
 
     fun getMember(memberId: Long): MemberDTO {
         val member = memberRepository.findById(memberId).orElseThrow()
@@ -70,13 +75,19 @@ class MemberService: UserDetailsService{
         registrationRepository.deleteByMemberIdAndTurnId(memberId, turnId)
     }
 
-//    fun findUserById(id: Long): Member {
-//        return memberRepository.findById(id).get()
-//    }
-//
-//    fun findMemberByUsername(username: String): Member {
-//        return memberRepository.findByUsername(username).get()
-//    }
+    fun acquireVoucher(memberId: Long, vouchers: List<VoucherRequestDTO>) {
+        val member = memberRepository.findById(memberId).orElseThrow()
+        val activityIdMap = vouchers.mapNotNull { it.activityId }.toSet()
+        val activities = activityRepository.findAllById(activityIdMap)
+        val activityMap = activities.associateBy { it.id }
+
+        vouchers.forEach { dto ->
+            val activity = activityMap[dto.activityId]
+                ?: throw IllegalArgumentException("Actividad con id ${dto.activityId} no encontrada")
+            member.acquire(activity, dto.amount ?: 0)
+        }
+        memberRepository.save(member)
+    }
 
     override fun loadUserByUsername(username: String?): UserDetails? {
         val member: Member = memberRepository.findByUsername(username!!).getOrNull()
