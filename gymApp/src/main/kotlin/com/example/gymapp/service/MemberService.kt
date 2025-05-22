@@ -2,10 +2,12 @@ package com.example.gymapp.service
 
 import com.example.gymapp.model.Member
 import com.example.gymapp.model.Registration
+import com.example.gymapp.model.Voucher
 import com.example.gymapp.repository.ActivityRepository
 import com.example.gymapp.repository.MemberRepository
 import com.example.gymapp.repository.RegistrationRepository
 import com.example.gymapp.repository.TurnRepository
+import com.example.gymapp.repository.VoucherRepository
 import com.example.gymapp.utils.MemberDTO
 import com.example.gymapp.utils.VoucherRequestDTO
 import jakarta.transaction.Transactional
@@ -35,6 +37,9 @@ class MemberService: UserDetailsService{
     @Autowired
     lateinit var activityRepository: ActivityRepository
 
+    @Autowired
+    lateinit var voucherRepository: VoucherRepository
+
     fun getMember(memberId: Long): MemberDTO {
         val member = memberRepository.findById(memberId).orElseThrow()
         //agregar manejo de error si el usuario no existe
@@ -46,6 +51,10 @@ class MemberService: UserDetailsService{
 
     fun getMemberRegistrations(memberId: Long): List<Registration> {
         return memberRepository.getMemberRegistrations(memberId)
+    }
+
+    fun getMemberVouchers(memberId: Long): List<Voucher> {
+        return voucherRepository.findByMemberId(memberId)
     }
 
 //    fun subscribe(memberId: Long, turnId: Long): Registration {
@@ -77,7 +86,7 @@ class MemberService: UserDetailsService{
 
     fun acquireVoucher(memberId: Long, vouchers: List<VoucherRequestDTO>) {
         val member = memberRepository.findById(memberId).orElseThrow()
-        val activityIdMap = vouchers.mapNotNull { it.activityId }.toSet()
+        val activityIdMap = vouchers.map { it.activityId }.toSet()
         val activities = activityRepository.findAllById(activityIdMap)
         val activityMap = activities.associateBy { it.id }
 

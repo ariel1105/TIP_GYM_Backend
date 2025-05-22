@@ -29,8 +29,15 @@ data class SubscriptionRequestDTO(
 )
 
 data class VoucherRequestDTO(
+    val activityId: Long,
+    val amount: Int
+)
+
+data class VoucherResponseDTO(
     val activityId: Long?,
-    val amount: Int?
+    val amount: Int,
+    val remainingClasses: Int,
+    val activityName: String
 )
 
 data class LoginDTO(

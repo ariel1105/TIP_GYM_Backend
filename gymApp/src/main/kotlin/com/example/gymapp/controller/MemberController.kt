@@ -6,6 +6,7 @@ import com.example.gymapp.utils.MemberDTO
 import com.example.gymapp.utils.RegistrationDTO
 import com.example.gymapp.utils.SubscriptionRequestDTO
 import com.example.gymapp.utils.VoucherRequestDTO
+import com.example.gymapp.utils.VoucherResponseDTO
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -29,6 +30,20 @@ class MemberController {
     fun getMember(request: HttpServletRequest): MemberDTO{
         val memberId = getMemberIdFromRequest(request)
         return memberService.getMember(memberId.toLong())
+    }
+
+    @GetMapping("/vouchers")
+    fun getVouchers(request: HttpServletRequest): List<VoucherResponseDTO>{
+        val memberId = getMemberIdFromRequest(request)
+        val vouchers = memberService.getMemberVouchers(memberId.toLong())
+        return vouchers.map {
+            VoucherResponseDTO(
+                it.activity!!.id,
+                it.amount,
+                it.remainingClasses,
+                it.activity!!.name.toString()
+            )
+        }
     }
 
     @GetMapping("/registrations")
