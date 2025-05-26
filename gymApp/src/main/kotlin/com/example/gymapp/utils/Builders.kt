@@ -4,6 +4,7 @@ import com.example.gymapp.model.Activity
 import com.example.gymapp.model.Voucher
 import com.example.gymapp.model.Member
 import com.example.gymapp.model.Turn
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class MemberBuilder(){
@@ -74,6 +75,8 @@ class VoucherBuilder {
     private var activity: Activity? = null
     private var amount: Int = 0
     private var remainingClasses: Int = 0
+    private var acquisitionDate: LocalDate = LocalDate.now()
+    private var acquisitionWay: String? = null
 
     fun build(): Voucher {
         val voucher = Voucher()
@@ -82,6 +85,8 @@ class VoucherBuilder {
         voucher.activity = activity
         voucher.amount = amount
         voucher.remainingClasses = remainingClasses
+        voucher.acquisitionWay = acquisitionWay
+        voucher.acquisitionDate = acquisitionDate
         return  voucher
     }
 
@@ -90,5 +95,7 @@ class VoucherBuilder {
     fun withActivity(activity: Activity) = apply { this.activity = activity }
     fun withAmount(amount: Int) = apply { this.amount = amount }
     fun withRemainingClasses(amount: Int) = apply { this.remainingClasses = amount }
+    fun withAcquisitionDate(date: LocalDate) = apply { this.acquisitionDate = date }
+    fun withAcquisitionWay(way: String) = apply { this.acquisitionWay = way }
 
 }

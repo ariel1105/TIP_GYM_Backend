@@ -4,6 +4,8 @@ import com.example.gymapp.utils.IncorrectVoucherException
 import com.example.gymapp.utils.NoRemainingClassesException
 import com.example.gymapp.utils.NonOwnVoucherException
 import jakarta.persistence.*
+import java.time.LocalDate
+import java.util.Date
 
 @Entity
 @Table(name = "vouchers")
@@ -23,6 +25,8 @@ class Voucher {
 
     var amount: Int = 0
     var remainingClasses: Int = 0
+    var acquisitionDate: LocalDate = LocalDate.now()
+    var acquisitionWay: String? = null
 
     fun validate(turn: Turn, memberId: Long?) {
         val incorrectVoucherForActivity = activity!!.id != turn.activity!!.id

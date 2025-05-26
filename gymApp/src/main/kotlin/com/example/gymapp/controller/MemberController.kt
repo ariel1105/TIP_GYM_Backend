@@ -1,5 +1,6 @@
 package com.example.gymapp.controller
 
+import com.example.gymapp.model.Voucher
 import com.example.gymapp.service.JwtService
 import com.example.gymapp.service.MemberService
 import com.example.gymapp.utils.MemberDTO
@@ -41,7 +42,9 @@ class MemberController {
                 it.activity!!.id,
                 it.amount,
                 it.remainingClasses,
-                it.activity!!.name.toString()
+                it.activity!!.name.toString(),
+                it.acquisitionDate,
+                it.acquisitionWay!!
             )
         }
     }
@@ -74,10 +77,17 @@ class MemberController {
     }
 
     @DeleteMapping("/unsubscribe/{turnId}")
-    fun unsubscribe(request: HttpServletRequest, @PathVariable turnId: Long): String{
+    fun unsubscribe(request: HttpServletRequest, @PathVariable turnId: Long): VoucherResponseDTO{
         val memberId = getMemberIdFromRequest(request)
-        memberService.unsubscribeFromTurn(memberId, turnId)
-        return "Has sido removido de este turno"
+        val voucher = memberService.unsubscribeFromTurn(memberId, turnId)
+        return VoucherResponseDTO(
+            voucher.activity!!.id,
+            voucher.amount,
+            voucher.remainingClasses,
+            voucher.activity!!.name.toString(),
+            voucher.acquisitionDate,
+            voucher.acquisitionWay!!
+        )
     }
 
     @PostMapping("/acquire")

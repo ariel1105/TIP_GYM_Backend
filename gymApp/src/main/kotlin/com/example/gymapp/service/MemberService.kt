@@ -76,12 +76,14 @@ class MemberService: UserDetailsService{
         return registrationRepository.saveAll(registrations)
     }
 
-    fun unsubscribeFromTurn(memberId: Long, turnId: Long) {
+    fun unsubscribeFromTurn(memberId: Long, turnId: Long): Voucher {
         val member = memberRepository.findById(memberId).orElseThrow()
         val turn = turnRepository.findById(turnId).orElseThrow()
-
-        member.unsubscribe(turn)
         registrationRepository.deleteByMemberIdAndTurnId(memberId, turnId)
+        val voucher = member.unsubscribe(turn)
+        memberRepository.save(member)
+
+        return voucher
     }
 
     fun acquireVoucher(memberId: Long, vouchers: List<VoucherRequestDTO>) {

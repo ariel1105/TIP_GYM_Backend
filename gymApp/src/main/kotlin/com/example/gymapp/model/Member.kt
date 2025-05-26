@@ -27,12 +27,13 @@ class Member {
     @OneToMany(mappedBy = "member", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     var vouchers: MutableList<Voucher> = mutableListOf()
 
-    fun acquire(activity: Activity, amount: Int): Voucher {
+    fun acquire(activity: Activity, amount: Int, acquisitionWay: String = "COMPRA"): Voucher {
         val voucher = VoucherBuilder()
             .withMember(this)
             .withActivity(activity)
             .withAmount(amount)
             .withRemainingClasses(amount)
+            .withAcquisitionWay(acquisitionWay)
             .build()
         vouchers.add(voucher)
         return voucher
@@ -49,7 +50,8 @@ class Member {
         return registration
     }
 
-    fun unsubscribe(turn: Turn){
+    fun unsubscribe(turn: Turn): Voucher{
         turn.remove(this)
+        return this.acquire(turn.activity!!, 1, acquisitionWay = "CANCELACIÓN DE TURNO")
     }
 }

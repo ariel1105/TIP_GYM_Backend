@@ -2,6 +2,8 @@ package com.example.gymapp.utils
 
 import java.time.LocalDateTime
 import jakarta.validation.constraints.*
+import java.time.LocalDate
+import java.util.Date
 
 data class RegistrationDTO(
     val turnId: Long?,
@@ -37,7 +39,9 @@ data class VoucherResponseDTO(
     val activityId: Long?,
     val amount: Int,
     val remainingClasses: Int,
-    val activityName: String
+    val activityName: String,
+    val acquisitionDate: LocalDate,
+    val acquisitionWay: String
 )
 
 data class LoginDTO(
