@@ -10,6 +10,7 @@ import com.example.gymapp.repository.TurnRepository
 import com.example.gymapp.repository.VoucherRepository
 import com.example.gymapp.utils.MemberDTO
 import com.example.gymapp.utils.VoucherRequestDTO
+import com.example.gymapp.utils.VoucherResponseDTO
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.GrantedAuthority
@@ -40,13 +41,27 @@ class MemberService: UserDetailsService{
     @Autowired
     lateinit var voucherRepository: VoucherRepository
 
-    fun getMember(memberId: Long): MemberDTO {
+    fun getMember(memberId: Long): Any {
         val member = memberRepository.findById(memberId).orElseThrow()
-        //agregar manejo de error si el usuario no existe
         val registrations = memberRepository.getMemberRegistrations(memberId).map {
             it.turn!!.id!!.toLong()
         }
-        return MemberDTO(member!!.name, member.username, member.id, registrations)
+        val vouchers = voucherRepository.getActiveVouchersByMemberId(memberId).map {
+            return VoucherResponseDTO(
+                it.activity!!.id,
+                it.amount,
+                it.remainingClasses,
+                it.activity!!.name.toString(),
+                it.acquisitionDate,
+                it.acquisitionWay.toString()
+            )
+        }
+        return MemberDTO(
+            member!!.name,
+            member.username,
+            member.id,
+            registrations,
+            vouchers)
     }
 
     fun getMemberRegistrations(memberId: Long): List<Registration> {
@@ -54,7 +69,7 @@ class MemberService: UserDetailsService{
     }
 
     fun getMemberVouchers(memberId: Long): List<Voucher> {
-        return voucherRepository.findByMemberId(memberId)
+        return voucherRepository.getActiveVouchersByMemberId(memberId)
     }
 
 //    fun subscribe(memberId: Long, turnId: Long): Registration {
@@ -68,6 +83,7 @@ class MemberService: UserDetailsService{
     fun subscribeToMultipleTurns(memberId: Long, turnIds: List<Long>): List<Registration> {
         val member = memberRepository.findById(memberId).orElseThrow()
         val turns = turnRepository.findAllById(turnIds)
+        val activeVouchers = voucherRepository.getActiveVouchersByMemberId(memberId)
 
         val registrations = turns.map { turn ->
             member.subscribe(turn)
