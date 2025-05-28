@@ -41,13 +41,13 @@ class MemberService: UserDetailsService{
     @Autowired
     lateinit var voucherRepository: VoucherRepository
 
-    fun getMember(memberId: Long): Any {
+    fun getMember(memberId: Long): MemberDTO {
         val member = memberRepository.findById(memberId).orElseThrow()
         val registrations = memberRepository.getMemberRegistrations(memberId).map {
             it.turn!!.id!!.toLong()
         }
         val vouchers = voucherRepository.getActiveVouchersByMemberId(memberId).map {
-            return VoucherResponseDTO(
+            VoucherResponseDTO(
                 it.activity!!.id,
                 it.amount,
                 it.remainingClasses,
@@ -83,9 +83,15 @@ class MemberService: UserDetailsService{
     fun subscribeToMultipleTurns(memberId: Long, turnIds: List<Long>): List<Registration> {
         val member = memberRepository.findById(memberId).orElseThrow()
         val turns = turnRepository.findAllById(turnIds)
-        val activeVouchers = voucherRepository.getActiveVouchersByMemberId(memberId)
+
+        val activeVouchers = voucherRepository.getActiveVouchersByMemberId(memberId).toMutableList()
 
         val registrations = turns.map { turn ->
+            val voucher = activeVouchers.firstOrNull {
+                it.activity?.id == turn.activity?.id && it.remainingClasses > 0
+            } ?: throw IllegalStateException("No hay voucher válido para la actividad ${turn.activity?.name}")
+
+            voucher.validate(turn, memberId)
             member.subscribe(turn)
         }
 
