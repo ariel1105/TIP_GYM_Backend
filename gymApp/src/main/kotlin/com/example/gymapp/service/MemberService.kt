@@ -9,6 +9,7 @@ import com.example.gymapp.repository.RegistrationRepository
 import com.example.gymapp.repository.TurnRepository
 import com.example.gymapp.repository.VoucherRepository
 import com.example.gymapp.utils.MemberDTO
+import com.example.gymapp.utils.NoRemainingClassesException
 import com.example.gymapp.utils.VoucherRequestDTO
 import com.example.gymapp.utils.VoucherResponseDTO
 import jakarta.transaction.Transactional
@@ -22,7 +23,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import kotlin.jvm.optionals.getOrNull
 
-@Transactional
 @Service
 class MemberService: UserDetailsService{
 
@@ -80,6 +80,7 @@ class MemberService: UserDetailsService{
 //        return registration
 //    }
 
+    @Transactional
     fun subscribeToMultipleTurns(memberId: Long, turnIds: List<Long>): List<Registration> {
         val member = memberRepository.findById(memberId).orElseThrow()
         val turns = turnRepository.findAllById(turnIds)
@@ -89,7 +90,7 @@ class MemberService: UserDetailsService{
         val registrations = turns.map { turn ->
             val voucher = activeVouchers.firstOrNull {
                 it.activity?.id == turn.activity?.id && it.remainingClasses > 0
-            } ?: throw IllegalStateException("No hay voucher válido para la actividad ${turn.activity?.name}")
+            } ?: throw NoRemainingClassesException(turn.activity!!.name.toString())
 
             voucher.validate(turn, memberId)
             member.subscribe(turn)
@@ -98,6 +99,7 @@ class MemberService: UserDetailsService{
         return registrationRepository.saveAll(registrations)
     }
 
+    @Transactional
     fun unsubscribeFromTurn(memberId: Long, turnId: Long): Voucher {
         val member = memberRepository.findById(memberId).orElseThrow()
         val turn = turnRepository.findById(turnId).orElseThrow()
@@ -108,6 +110,7 @@ class MemberService: UserDetailsService{
         return voucher
     }
 
+    @Transactional
     fun acquireVoucher(memberId: Long, vouchers: List<VoucherRequestDTO>) {
         val member = memberRepository.findById(memberId).orElseThrow()
         val activityIdMap = vouchers.map { it.activityId }.toSet()

@@ -34,7 +34,7 @@ class Voucher {
         val noRemainingClasses = remainingClasses == 0
         if (nonOwnVoucher) { throw NonOwnVoucherException()}
         if (incorrectVoucherForActivity) { throw IncorrectVoucherException() }
-        if (noRemainingClasses) { throw NoRemainingClassesException()}
+        if (noRemainingClasses) { throw NoRemainingClassesException(turn.activity!!.name.toString())}
         remainingClasses--
     }
 }
