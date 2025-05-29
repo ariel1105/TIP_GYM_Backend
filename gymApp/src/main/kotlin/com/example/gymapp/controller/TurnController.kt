@@ -19,14 +19,14 @@ class TurnController {
     @GetMapping("/turns/{activityId}")
     fun getTurns(@PathVariable activityId: String): List<TurnDTO>{
         return turnService.getTurnsActivity(activityId.toLong()).map {
-            TurnDTO(it.id, it.datetime, it.capacity, it.enrolled, it.activity!!.name)
+            TurnDTO(it.id, it.datetime, it.capacity, it.enrolled, it.activity!!.name, it.activity!!.id)
         }
     }
 
     @GetMapping("/turns/week")
     fun getTurnsByWeek(@RequestParam startDate: LocalDate): List<TurnDTO>{
         return turnService.getTurnsByWeek(startDate).map{
-            TurnDTO(it.id, it.datetime, it.capacity, it.enrolled, it.activity!!.name)
+            TurnDTO(it.id, it.datetime, it.capacity, it.enrolled, it.activity!!.name, it.activity!!.id)
         }
     }
 }

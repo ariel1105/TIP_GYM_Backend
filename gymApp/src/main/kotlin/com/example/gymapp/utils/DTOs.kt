@@ -16,7 +16,8 @@ data class TurnDTO(
     val datetime: LocalDateTime?,
     val capacity: Int?,
     val enrolled: Int?,
-    val activityName: String?
+    val activityName: String?,
+    val activityId: Long?
 )
 
 data class MemberDTO(
