@@ -42,8 +42,8 @@ data class VoucherResponseDTO(
     val amount: Int,
     val remainingClasses: Int,
     val activityName: String,
-    val acquisitionDate: LocalDate,
-    val acquisitionWay: String
+    val acquisitionDate: LocalDate?,
+    val acquisitionWay: String?
 )
 
 data class LoginDTO(

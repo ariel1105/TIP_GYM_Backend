@@ -43,10 +43,10 @@ class MemberService: UserDetailsService{
 
     fun getMember(memberId: Long): MemberDTO {
         val member = memberRepository.findById(memberId).orElseThrow()
-        val registrations = memberRepository.getMemberRegistrations(memberId).map {
+        val registrations = memberRepository.getMemberRegistrations(memberId).orEmpty().map {
             it.turn!!.id!!.toLong()
         }
-        val vouchers = voucherRepository.getActiveVouchersByMemberId(memberId).map {
+        val vouchers = voucherRepository.getActiveVouchersByMemberId(memberId).orEmpty().map {
             VoucherResponseDTO(
                 it.activity!!.id,
                 it.amount,
