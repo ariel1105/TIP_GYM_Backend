@@ -21,6 +21,4 @@ class ActivityController {
     fun getActivities(): List<Activity>{
         return activityService.getActivities()
     }
-
-
 }

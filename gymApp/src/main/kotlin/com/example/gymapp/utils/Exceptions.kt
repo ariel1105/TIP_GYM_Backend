@@ -2,7 +2,7 @@ package com.example.gymapp.utils
 
 class IncorrectVoucherException(): RuntimeException("Este voucher no es para esta actividad")
 class NonOwnVoucherException(): RuntimeException("No puede usar este voucher")
-class NoRemainingClassesException(activity: String): RuntimeException("No hay voucher válido para la actividad '$activity'}")
+class NoRemainingClassesException(activity: String): RuntimeException("No hay voucher válido para la actividad $activity")
 class TurnAlreadyFullException(): RuntimeException("No puedes reservar porque el turno ya está lleno")
 class NoTurnsForActivityException(): RuntimeException("No hay turnos para esta actividad, prueba mas tarde")
 class UsernameAlreadyTakenException(val username: String) : RuntimeException("El usuario '$username' ya está registrado")

@@ -67,6 +67,7 @@ class VoucherTest {
             .withId(1L)
             .build()
         val activity = ActivityBuilder()
+            .withName("yoga")
             .withId(1L)
             .build()
         val voucher = VoucherBuilder()
@@ -77,7 +78,7 @@ class VoucherTest {
         val turn = TurnBuilder()
             .withActivity(activity)
             .build()
-        val expectedErrorMsg = "Has utilizado todas las clases de tu voucher"
+        val expectedErrorMsg = "No hay voucher válido para la actividad yoga"
         val errorNoClassesRemaining = assertThrows<NoRemainingClassesException> { voucher.validate(turn, 1L)}.message
 
         assertEquals(errorNoClassesRemaining, expectedErrorMsg)
