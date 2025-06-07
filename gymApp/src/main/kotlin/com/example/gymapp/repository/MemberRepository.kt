@@ -15,6 +15,5 @@ interface MemberRepository : JpaRepository<Member, Long> {
             "WHERE r.member.id = :memberId")
     fun getMemberRegistrations(memberId: Long): List<Registration>
     fun findByUsername(string: String): Optional<Member>
-    fun existsByUsername(username: String): Boolean
 
 }

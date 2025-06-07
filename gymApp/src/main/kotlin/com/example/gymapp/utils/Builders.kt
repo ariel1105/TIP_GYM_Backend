@@ -3,6 +3,7 @@ package com.example.gymapp.utils
 import com.example.gymapp.model.Activity
 import com.example.gymapp.model.Voucher
 import com.example.gymapp.model.Member
+import com.example.gymapp.model.Registration
 import com.example.gymapp.model.Turn
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -97,5 +98,22 @@ class VoucherBuilder {
     fun withRemainingClasses(amount: Int) = apply { this.remainingClasses = amount }
     fun withAcquisitionDate(date: LocalDate) = apply { this.acquisitionDate = date }
     fun withAcquisitionWay(way: String) = apply { this.acquisitionWay = way }
+}
 
+class RegistrationBuilder {
+    private var id: Long? = null
+    private var member: Member? = null
+    private var turn: Turn? = null
+
+    fun withId(id: Long) = apply { this.id = id }
+    fun withMember(member: Member) = apply { this.member = member }
+    fun withTurn(turn: Turn) = apply { this.turn = turn }
+
+    fun build(): Registration {
+        val registration = Registration()
+        registration.id = id
+        registration.member = member
+        registration.turn = turn
+        return registration
+    }
 }

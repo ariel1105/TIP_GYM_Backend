@@ -43,10 +43,10 @@ class MemberService: UserDetailsService{
 
     fun getMember(memberId: Long): MemberDTO {
         val member = memberRepository.findById(memberId).orElseThrow()
-        val registrations = memberRepository.getMemberRegistrations(memberId).orEmpty().map {
+        val registrations = memberRepository.getMemberRegistrations(memberId).map {
             it.turn!!.id!!.toLong()
         }
-        val vouchers = voucherRepository.getActiveVouchersByMemberId(memberId).orEmpty().map {
+        val vouchers = voucherRepository.getActiveVouchersByMemberId(memberId).map {
             VoucherResponseDTO(
                 it.activity!!.id,
                 it.amount,
@@ -71,14 +71,6 @@ class MemberService: UserDetailsService{
     fun getMemberVouchers(memberId: Long): List<Voucher> {
         return voucherRepository.getActiveVouchersByMemberId(memberId)
     }
-
-//    fun subscribe(memberId: Long, turnId: Long): Registration {
-//        val member = memberRepository.findById(memberId).getOrNull()
-//        val turn = turnRepository.findById(turnId).getOrNull()
-//        val registration = member!!.subscribe(turn!!)
-//        registrationRepository.save(registration)
-//        return registration
-//    }
 
     @Transactional
     fun subscribeToMultipleTurns(memberId: Long, turnIds: List<Long>): List<Registration> {

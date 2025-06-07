@@ -23,6 +23,7 @@ repositories {
 }
 
 dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-websocket")
 	implementation("org.springframework.boot:spring-boot-starter-data-rest")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -42,6 +43,7 @@ dependencies {
 	testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("org.mockito:mockito-core:${mockitoVersion}")
+	testImplementation("com.h2database:h2")
 }
 
 kotlin {

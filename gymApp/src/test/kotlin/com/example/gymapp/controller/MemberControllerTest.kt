@@ -34,7 +34,7 @@ class MemberControllerTest {
     @Test
     fun `should return member info`() {
         val memberId = 1L
-        val expectedDTO = MemberDTO("John", "john123", memberId, listOf(), listOf())
+        val expectedDTO = MemberDTO("member", "member123", memberId, listOf(), listOf())
         whenever(request.getHeader("Authorization")).thenReturn("Bearer token")
         whenever(jwtService.extractId("Bearer token")).thenReturn(memberId.toString())
         whenever(memberService.getMember(memberId)).thenReturn(expectedDTO)
@@ -47,7 +47,7 @@ class MemberControllerTest {
     @Test
     fun `should return member vouchers`() {
         val memberId = 1L
-        val voucher = VoucherResponseDTO(2L, 10, 10, "Yoga", LocalDate.now(), "online")
+        val voucher = VoucherResponseDTO(2L, 10, 10, "Yoga", LocalDate.now(), "COMPRA")
         whenever(request.getHeader("Authorization")).thenReturn("Bearer token")
         whenever(jwtService.extractId("Bearer token")).thenReturn(memberId.toString())
         whenever(memberService.getMemberVouchers(memberId)).thenReturn(listOf(
@@ -56,7 +56,7 @@ class MemberControllerTest {
                 .withAmount(10)
                 .withRemainingClasses(10)
                 .withAcquisitionDate(LocalDate.now())
-                .withAcquisitionWay("online")
+                .withAcquisitionWay("COMPRA")
                 .build()
         ))
 
@@ -110,7 +110,7 @@ class MemberControllerTest {
             .withAmount(5)
             .withRemainingClasses(4)
             .withAcquisitionDate(LocalDate.now())
-            .withAcquisitionWay("manual")
+            .withAcquisitionWay("COMPRA")
             .build()
 
         whenever(request.getHeader("Authorization")).thenReturn("Bearer token")

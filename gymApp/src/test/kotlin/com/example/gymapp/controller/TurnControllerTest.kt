@@ -5,6 +5,7 @@ import com.example.gymapp.service.TurnService
 import com.example.gymapp.utils.ActivityBuilder
 import com.example.gymapp.utils.TurnBuilder
 import com.example.gymapp.utils.NoTurnsForActivityException
+import com.example.gymapp.utils.ScheduleTurnDTO
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -83,5 +84,49 @@ class TurnControllerTest {
         }
 
         assertEquals("NoTurnsForActivityException", exception::class.simpleName)
+    }
+
+    @Test
+    fun `scheduleTurns should create and return DTOs`() {
+        val activityId = 5L
+        val activity = ActivityBuilder().withId(activityId).withName("Funcional").build()
+
+        val inputDTOs = listOf(
+            ScheduleTurnDTO(dateTime = LocalDateTime.of(2025, 6, 10, 9, 0), capacity = 12),
+            ScheduleTurnDTO(dateTime = LocalDateTime.of(2025, 6, 11, 10, 0), capacity = 15)
+        )
+
+        val turns = listOf(
+            TurnBuilder()
+                .withId(100L)
+                .withDatetime(inputDTOs[0].dateTime!!)
+                .withCapacity(12)
+                .withEnrolled(0)
+                .withActivity(activity)
+                .build(),
+            TurnBuilder()
+                .withId(101L)
+                .withDatetime(inputDTOs[1].dateTime!!)
+                .withCapacity(15)
+                .withEnrolled(0)
+                .withActivity(activity)
+                .build()
+        )
+
+        whenever(turnService.scheduleTurns(activityId, inputDTOs)).thenReturn(turns)
+
+        val result = turnController.scheduleTurns(activityId, inputDTOs)
+
+        assertEquals(2, result.size)
+
+        assertEquals(turns[0].id, result[0].id)
+        assertEquals(turns[0].datetime, result[0].datetime)
+        assertEquals(turns[0].capacity, result[0].capacity)
+        assertEquals(turns[0].enrolled, result[0].enrolled)
+        assertEquals(activity.name, result[0].activityName)
+        assertEquals(activity.id, result[0].activityId)
+
+        assertEquals(turns[1].id, result[1].id)
+        assertEquals(turns[1].datetime, result[1].datetime)
     }
 }

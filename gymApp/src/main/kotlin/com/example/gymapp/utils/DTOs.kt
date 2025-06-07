@@ -32,6 +32,11 @@ data class SubscriptionRequestDTO(
     val turnIds: List<Long>
 )
 
+data class ScheduleTurnDTO(
+    val dateTime: LocalDateTime?,
+    val capacity: Int?,
+)
+
 data class VoucherRequestDTO(
     val activityId: Long,
     val amount: Int
