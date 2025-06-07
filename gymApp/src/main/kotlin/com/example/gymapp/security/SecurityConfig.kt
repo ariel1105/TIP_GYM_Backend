@@ -33,7 +33,7 @@ class SecurityConfig {
             .csrf { it.disable() }
             .headers { header -> header.frameOptions { it.disable() }}
             .authorizeHttpRequests {
-                it.requestMatchers("/login/**", "/register/**", "/activities", "/turns/**").permitAll() }
+                it.requestMatchers("/login/**", "/register/**", "/activities", "/turns/**", "/ws/**").permitAll() }
             .authorizeHttpRequests { it.anyRequest().authenticated() }
 //            .authorizeHttpRequests { conf ->
 //                conf.requestMatchers("admin/**").hasAuthority("ADMIN")
@@ -61,7 +61,7 @@ class SecurityConfig {
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("http://localhost:8081") // tu frontend
+        configuration.allowedOriginPatterns = listOf("*") // tu frontend
         configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
         configuration.allowedHeaders = listOf("*")
         configuration.allowCredentials = true
