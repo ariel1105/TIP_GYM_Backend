@@ -97,6 +97,12 @@ class MemberController {
         return "ya tienes tus vouchers!"
     }
 
+    @PostMapping("/notificactionSubscribe/{activityId}")
+    fun subscribeForNotification(request: HttpServletRequest, @PathVariable activityId: Long): Set<Long> {
+        val memberId = getMemberIdFromRequest(request)
+        return memberService.subscribeForNotification(memberId, activityId)
+    }
+
     private fun getMemberIdFromRequest(request: HttpServletRequest): Long {
         return jwtService.extractId(request.getHeader("Authorization")).toLong()
     }

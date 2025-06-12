@@ -61,7 +61,9 @@ class MemberService: UserDetailsService{
             member.username,
             member.id,
             registrations,
-            vouchers)
+            vouchers,
+            member.notificationSubscriptions.map{it.id!!}.toSet()
+        )
     }
 
     fun getMemberRegistrations(memberId: Long): List<Registration> {
@@ -100,6 +102,15 @@ class MemberService: UserDetailsService{
         memberRepository.save(member)
 
         return voucher
+    }
+
+    @Transactional
+    fun subscribeForNotification(memberId: Long, activityId: Long): Set<Long>{
+        val member = memberRepository.findById(memberId).orElseThrow()
+        val activity = activityRepository.findById(activityId).orElseThrow()
+        member.subscribeToNotification(activity)
+        memberRepository.save(member)
+        return member.notificationSubscriptions.map{it.id!!}.toSet()
     }
 
     @Transactional

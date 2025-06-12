@@ -25,7 +25,8 @@ data class MemberDTO(
     val username: String?,
     val id: Long?,
     val turns: List<Long>,
-    val vouchers: List<VoucherResponseDTO>
+    val vouchers: List<VoucherResponseDTO>,
+    val activitiesToNotify: Set<Long>
 )
 
 data class SubscriptionRequestDTO(

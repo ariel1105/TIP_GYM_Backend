@@ -3,6 +3,7 @@ package com.example.gymapp.model
 import com.example.gymapp.utils.NoRemainingClassesException
 import com.example.gymapp.utils.NonOwnVoucherException
 import com.example.gymapp.utils.VoucherBuilder
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -27,6 +28,16 @@ class Member {
     @OneToMany(mappedBy = "member", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     var vouchers: MutableList<Voucher> = mutableListOf()
 
+
+    @ManyToMany
+    @JoinTable(
+        name = "member_notification_subscriptions",
+        joinColumns = [JoinColumn(name = "member_id")],
+        inverseJoinColumns = [JoinColumn(name = "activity_id")]
+    )
+    val notificationSubscriptions: MutableSet<Activity> = mutableSetOf()
+
+
     fun acquire(activity: Activity, amount: Int, acquisitionWay: String = "COMPRA"): Voucher {
         val voucher = VoucherBuilder()
             .withMember(this)
@@ -37,6 +48,10 @@ class Member {
             .build()
         vouchers.add(voucher)
         return voucher
+    }
+
+    fun subscribeToNotification(activity: Activity){
+        notificationSubscriptions.add(activity)
     }
 
 //    fun useVoucher(voucher: Voucher?, turn:Turn): Registration {
