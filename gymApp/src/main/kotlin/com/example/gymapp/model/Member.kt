@@ -50,8 +50,10 @@ class Member {
         return voucher
     }
 
-    fun subscribeToNotification(activity: Activity){
-        notificationSubscriptions.add(activity)
+    fun subscribeToNotification(activity: Activity) {
+        if (!notificationSubscriptions.remove(activity)) {
+            notificationSubscriptions.add(activity)
+        }
     }
 
 //    fun useVoucher(voucher: Voucher?, turn:Turn): Registration {
