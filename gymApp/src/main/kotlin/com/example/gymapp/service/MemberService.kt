@@ -1,13 +1,20 @@
 package com.example.gymapp.service
 
+import com.example.gymapp.model.BodyBuildingSectorEntry
+import com.example.gymapp.model.BodyBuildingSubscription
 import com.example.gymapp.model.Member
 import com.example.gymapp.model.Registration
 import com.example.gymapp.model.Voucher
 import com.example.gymapp.repository.ActivityRepository
+import com.example.gymapp.repository.BodyBuildingSectorEntryRepository
+import com.example.gymapp.repository.BodyBuildingSubscriptionRepository
 import com.example.gymapp.repository.MemberRepository
 import com.example.gymapp.repository.RegistrationRepository
 import com.example.gymapp.repository.TurnRepository
 import com.example.gymapp.repository.VoucherRepository
+import com.example.gymapp.utils.BodyBuildingSectorEntryBuilder
+import com.example.gymapp.utils.BodyBuildingSubscriptionBuilder
+import com.example.gymapp.utils.BodyBuildingSubscriptionDTO
 import com.example.gymapp.utils.MemberDTO
 import com.example.gymapp.utils.NoRemainingClassesException
 import com.example.gymapp.utils.VoucherRequestDTO
@@ -21,6 +28,8 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
+import java.time.LocalDate
+import java.time.LocalDateTime
 import kotlin.jvm.optionals.getOrNull
 
 @Service
@@ -41,6 +50,12 @@ class MemberService: UserDetailsService{
     @Autowired
     lateinit var voucherRepository: VoucherRepository
 
+    @Autowired
+    lateinit var bodyBuildingSubscriptionRepository: BodyBuildingSubscriptionRepository
+
+    @Autowired
+    lateinit var bodyBuildingSectorEntryRepository : BodyBuildingSectorEntryRepository
+
     fun getMember(memberId: Long): MemberDTO {
         val member = memberRepository.findById(memberId).orElseThrow()
         val registrations = memberRepository.getMemberRegistrations(memberId).map {
@@ -56,13 +71,23 @@ class MemberService: UserDetailsService{
                 it.acquisitionWay.toString()
             )
         }
+        val activeBodyBuildingSubscriptionDTO = bodyBuildingSubscriptionRepository
+            .findActiveSubscriptionByMemberId(memberId).let {
+                BodyBuildingSubscriptionDTO(
+                    member!!.name.toString(),
+                    it!!.acquisitionDate!!,
+                    it.dueDate!!,
+                    it.daysPerWeek!!
+                )
+            }
         return MemberDTO(
             member!!.name,
             member.username,
             member.id,
             registrations,
             vouchers,
-            member.notificationSubscriptions.map{it.id!!}.toSet()
+            member.notificationSubscriptions.map{it.id!!}.toSet(),
+            activeBodyBuildingSubscriptionDTO
         )
     }
 
@@ -128,6 +153,37 @@ class MemberService: UserDetailsService{
         memberRepository.save(member)
     }
 
+    @Transactional
+    fun subscribeBodyBuilding(memberId: Long, daysPerWeek: Int): BodyBuildingSubscription {
+        val member = memberRepository.findById(memberId).orElseThrow()
+        val currentDate = LocalDate.now()
+        val activeSubscription = bodyBuildingSubscriptionRepository
+            .findActiveSubscriptionByMemberId(memberId)
+        if (activeSubscription != null) {
+            throw IllegalStateException("Ya existe una suscripción activa para este miembro.")
+        }
+        val dueDate = currentDate.plusMonths(1)
+        return bodyBuildingSubscriptionRepository.save(
+            BodyBuildingSubscriptionBuilder()
+                .withMember(member)
+                .withAcquisitionDate(currentDate)
+                .withDaysPerWeek(daysPerWeek)
+                .withDueDate(dueDate)
+                .build()
+        )
+    }
+
+    fun registerEntryBodyBuildingSector(memberId: Long): Member {
+        val member = memberRepository.findById(memberId).orElseThrow()
+        bodyBuildingSectorEntryRepository.save(
+            BodyBuildingSectorEntryBuilder()
+                .withMember(member)
+                .withDateTime(LocalDateTime.now())
+                .build()
+        )
+        return member
+    }
+
     override fun loadUserByUsername(username: String?): UserDetails? {
         val member: Member = memberRepository.findByUsername(username!!).getOrNull()
             ?: throw UsernameNotFoundException("User with user $username does not exist.")
@@ -135,4 +191,6 @@ class MemberService: UserDetailsService{
         val authorities: Set<GrantedAuthority> = listOf(SimpleGrantedAuthority("ROLE_USER")).toSet()
         return User(member.username, member.password, true, true, true, true, authorities)
     }
+
+
 }

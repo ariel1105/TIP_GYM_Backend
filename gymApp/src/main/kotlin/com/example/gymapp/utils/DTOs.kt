@@ -3,12 +3,18 @@ package com.example.gymapp.utils
 import java.time.LocalDateTime
 import jakarta.validation.constraints.*
 import java.time.LocalDate
-import java.util.Date
 
 data class RegistrationDTO(
     val turnId: Long?,
     val activityName: String,
     val startTime: LocalDateTime?
+)
+
+data class BodyBuildingSubscriptionDTO(
+    val member: String,
+    val acquisitionDate: LocalDate,
+    val dueDate: LocalDate,
+    val daysPerWeek: Int
 )
 
 data class TurnDTO(
@@ -26,7 +32,8 @@ data class MemberDTO(
     val id: Long?,
     val turns: List<Long>,
     val vouchers: List<VoucherResponseDTO>,
-    val activitiesToNotify: Set<Long>
+    val activitiesToNotify: Set<Long>,
+    val bodyBuildingSubscription: BodyBuildingSubscriptionDTO
 )
 
 data class SubscriptionRequestDTO(

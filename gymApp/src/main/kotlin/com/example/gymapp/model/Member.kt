@@ -56,12 +56,6 @@ class Member {
         }
     }
 
-//    fun useVoucher(voucher: Voucher?, turn:Turn): Registration {
-//        voucher!!.validate(turn, id)
-//        val registration = turn.register(this)
-//        return registration
-//    }
-
     fun subscribe(turn: Turn): Registration {
         val registration = turn.register(this)
         return registration

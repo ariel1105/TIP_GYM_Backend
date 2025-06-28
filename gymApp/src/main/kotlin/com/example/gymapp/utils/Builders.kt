@@ -1,6 +1,8 @@
 package com.example.gymapp.utils
 
 import com.example.gymapp.model.Activity
+import com.example.gymapp.model.BodyBuildingSectorEntry
+import com.example.gymapp.model.BodyBuildingSubscription
 import com.example.gymapp.model.Voucher
 import com.example.gymapp.model.Member
 import com.example.gymapp.model.Registration
@@ -115,5 +117,49 @@ class RegistrationBuilder {
         registration.member = member
         registration.turn = turn
         return registration
+    }
+}
+
+class BodyBuildingSubscriptionBuilder {
+
+    private var id: Long? = null
+    private var member: Member? = null
+    private var acquisitionDate: LocalDate? = null
+    private var dueDate: LocalDate? = null
+    private var daysPerWeek: Int? = null
+
+    fun withId(id: Long) = apply { this.id = id }
+    fun withMember(member: Member) = apply { this.member = member }
+    fun withAcquisitionDate(acquisitionDate: LocalDate) = apply { this.acquisitionDate = acquisitionDate }
+    fun withDueDate(dueDate: LocalDate) = apply { this.dueDate = dueDate }
+    fun withDaysPerWeek(daysPerWeek: Int) = apply { this.daysPerWeek = daysPerWeek }
+
+    fun build(): BodyBuildingSubscription {
+        val subscription = BodyBuildingSubscription()
+        subscription.id = id
+        subscription.member = member
+        subscription.acquisitionDate = acquisitionDate
+        subscription.dueDate = dueDate
+        subscription.daysPerWeek = daysPerWeek
+        return subscription
+    }
+}
+
+class BodyBuildingSectorEntryBuilder {
+
+    private var id: Long? = null
+    private var member: Member? = null
+    private var dateTime: LocalDateTime? = null
+
+    fun withId(id: Long) = apply { this.id = id }
+    fun withMember(member: Member) = apply { this.member = member }
+    fun withDateTime(dateTime: LocalDateTime) = apply { this.dateTime = dateTime }
+
+    fun build(): BodyBuildingSectorEntry {
+        val entry = BodyBuildingSectorEntry()
+        entry.id = id
+        entry.member = member
+        entry.dateTime = dateTime
+        return entry
     }
 }

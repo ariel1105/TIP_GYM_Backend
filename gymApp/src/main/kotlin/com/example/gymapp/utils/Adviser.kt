@@ -3,6 +3,7 @@ package com.example.gymapp.utils
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
+import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
@@ -40,6 +41,12 @@ class Adviser {
             .fieldErrors
             .firstOrNull()?.defaultMessage ?: "Error de validación"
         return ResponseEntity.badRequest().body(firstErrorMessage)
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException::class)
+    fun handleMissingParams(ex: MissingServletRequestParameterException): ResponseEntity<String> {
+        val paramName = ex.parameterName
+        return ResponseEntity("El parámetro '$paramName' es obligatorio.", HttpStatus.BAD_REQUEST)
     }
 
 }

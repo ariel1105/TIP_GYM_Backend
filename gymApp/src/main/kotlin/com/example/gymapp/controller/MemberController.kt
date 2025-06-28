@@ -3,6 +3,7 @@ package com.example.gymapp.controller
 import com.example.gymapp.model.Voucher
 import com.example.gymapp.service.JwtService
 import com.example.gymapp.service.MemberService
+import com.example.gymapp.utils.BodyBuildingSubscriptionDTO
 import com.example.gymapp.utils.MemberDTO
 import com.example.gymapp.utils.RegistrationDTO
 import com.example.gymapp.utils.SubscriptionRequestDTO
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -101,6 +103,24 @@ class MemberController {
     fun subscribeForNotification(request: HttpServletRequest, @PathVariable activityId: Long): Set<Long> {
         val memberId = getMemberIdFromRequest(request)
         return memberService.subscribeForNotification(memberId, activityId)
+    }
+
+    @PostMapping("/bodyBuilding/subscribe")
+    fun subscribeBodyBuilding(request: HttpServletRequest, @RequestParam daysPerWeek: Int): BodyBuildingSubscriptionDTO{
+        val memberId = getMemberIdFromRequest(request)
+        val subscription = memberService.subscribeBodyBuilding(memberId, daysPerWeek)
+        return BodyBuildingSubscriptionDTO(
+            subscription.member!!.name!!,
+            subscription.acquisitionDate!!,
+            subscription.dueDate!!,
+            subscription.daysPerWeek!!
+        )
+    }
+
+    @PostMapping("/bodyBuilding/registerEntry")
+    fun registerEntry(@RequestParam memberId: Long): String{
+        val member = memberService.registerEntryBodyBuildingSector(memberId)
+        return "Bienvenido ${member.name}"
     }
 
     private fun getMemberIdFromRequest(request: HttpServletRequest): Long {
