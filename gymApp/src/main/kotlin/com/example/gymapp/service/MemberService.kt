@@ -72,10 +72,10 @@ class MemberService: UserDetailsService{
             )
         }
         val activeBodyBuildingSubscriptionDTO = bodyBuildingSubscriptionRepository
-            .findActiveSubscriptionByMemberId(memberId).let {
+            .findActiveSubscriptionByMemberId(memberId)?.let {
                 BodyBuildingSubscriptionDTO(
                     member!!.name.toString(),
-                    it!!.acquisitionDate!!,
+                    it.acquisitionDate!!,
                     it.dueDate!!,
                     it.daysPerWeek!!
                 )

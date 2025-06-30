@@ -33,7 +33,7 @@ data class MemberDTO(
     val turns: List<Long>,
     val vouchers: List<VoucherResponseDTO>,
     val activitiesToNotify: Set<Long>,
-    val bodyBuildingSubscription: BodyBuildingSubscriptionDTO
+    val bodyBuildingSubscription: BodyBuildingSubscriptionDTO?
 )
 
 data class SubscriptionRequestDTO(
