@@ -184,6 +184,11 @@ class MemberService: UserDetailsService{
         return member
     }
 
+    fun getMemberBodyBuildingEntries(memberId: Long, monthNumber: Int): List<LocalDateTime> {
+        return bodyBuildingSectorEntryRepository.findByMemberIdAndMonth(memberId, monthNumber)
+    }
+
+
     override fun loadUserByUsername(username: String?): UserDetails? {
         val member: Member = memberRepository.findByUsername(username!!).getOrNull()
             ?: throw UsernameNotFoundException("User with user $username does not exist.")
@@ -191,6 +196,5 @@ class MemberService: UserDetailsService{
         val authorities: Set<GrantedAuthority> = listOf(SimpleGrantedAuthority("ROLE_USER")).toSet()
         return User(member.username, member.password, true, true, true, true, authorities)
     }
-
 
 }

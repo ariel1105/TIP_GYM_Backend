@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/member")
@@ -121,6 +122,12 @@ class MemberController {
     fun registerEntry(@RequestParam memberId: Long): String{
         val member = memberService.registerEntryBodyBuildingSector(memberId)
         return "Bienvenido ${member.name}"
+    }
+
+    @GetMapping("/bodyBuilding/entries")
+    fun getMemberBodyBuildingEntries(request: HttpServletRequest, @RequestParam monthNumber: Int): List<LocalDateTime> {
+        val memberId = getMemberIdFromRequest(request)
+        return memberService.getMemberBodyBuildingEntries(memberId, monthNumber)
     }
 
     private fun getMemberIdFromRequest(request: HttpServletRequest): Long {
