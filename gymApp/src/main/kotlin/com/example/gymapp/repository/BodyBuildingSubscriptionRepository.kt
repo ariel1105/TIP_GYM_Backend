@@ -1,6 +1,7 @@
 package com.example.gymapp.repository
 
 import com.example.gymapp.model.BodyBuildingSubscription
+import com.example.gymapp.model.Member
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -17,5 +18,11 @@ interface BodyBuildingSubscriptionRepository : JpaRepository<BodyBuildingSubscri
         @Param("memberId") memberId: Long,
         @Param("today") today: LocalDate = LocalDate.now()
     ): BodyBuildingSubscription?
+    fun findByMemberAndAcquisitionDateLessThanEqualAndDueDateGreaterThanEqual(
+        member: Member,
+        acquisitionDate: LocalDate,
+        dueDate: LocalDate
+    ): BodyBuildingSubscription?
+
 
 }

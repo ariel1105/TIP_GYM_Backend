@@ -21,6 +21,7 @@ import com.example.gymapp.utils.VoucherRequestDTO
 import com.example.gymapp.utils.VoucherResponseDTO
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
@@ -28,8 +29,11 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import kotlin.jvm.optionals.getOrNull
 
 @Service
@@ -148,7 +152,7 @@ class MemberService: UserDetailsService{
         vouchers.forEach { dto ->
             val activity = activityMap[dto.activityId]
                 ?: throw IllegalArgumentException("Actividad con id ${dto.activityId} no encontrada")
-            member.acquire(activity, dto.amount ?: 0)
+            member.acquire(activity, dto.amount)
         }
         memberRepository.save(member)
     }
@@ -173,16 +177,54 @@ class MemberService: UserDetailsService{
         )
     }
 
+//    fun registerEntryBodyBuildingSector(memberId: Long): Member {
+//        val member = memberRepository.findById(memberId).orElseThrow()
+//        bodyBuildingSectorEntryRepository.save(
+//            BodyBuildingSectorEntryBuilder()
+//                .withMember(member)
+//                .withDateTime(LocalDateTime.now())
+//                .build()
+//        )
+//        return member
+//    }
     fun registerEntryBodyBuildingSector(memberId: Long): Member {
         val member = memberRepository.findById(memberId).orElseThrow()
+
+        val today = LocalDate.now()
+        println("📆 Fecha actual: $today")
+        val subscriptions = bodyBuildingSubscriptionRepository.findAll()
+            println("🔍 Todas las suscripciones: ${subscriptions.map { it.member?.id to it.acquisitionDate to it.dueDate }}")
+
+        // Buscar suscripción activa
+        val subscription = bodyBuildingSubscriptionRepository
+            .findByMemberAndAcquisitionDateLessThanEqualAndDueDateGreaterThanEqual(member, today, today)
+            ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "El miembro no tiene una suscripción activa")
+        // Fechas para la semana actual (lunes a domingo)
+        val startOfWeek = today.with(DayOfWeek.MONDAY).atStartOfDay()
+        val endOfWeek = today.with(DayOfWeek.SUNDAY).atTime(LocalTime.MAX)
+        // Buscar todos los ingresos del miembro esta semana
+        val ingresos = bodyBuildingSectorEntryRepository.findByMemberAndDateTimeBetween(member, startOfWeek, endOfWeek)
+
+        // Ver cuántos días distintos ya ingresó esta semana
+        val diasDistintos = ingresos.map { it.dateTime!!.toLocalDate() }.toSet().size
+
+        val yaIngresoHoy = ingresos.any { it.dateTime!!.toLocalDate() == today }
+            if (yaIngresoHoy) {
+                throw ResponseStatusException(HttpStatus.FORBIDDEN, "Ya registraste un ingreso hoy")
+            }
+        if (diasDistintos >= (subscription.daysPerWeek ?: 0)) {
+                throw ResponseStatusException(HttpStatus.FORBIDDEN, "El miembro ya ha ingresado todos los días correspondientes a esta semana")
+            }
+        // Registrar el nuevo ingreso
         bodyBuildingSectorEntryRepository.save(
-            BodyBuildingSectorEntryBuilder()
-                .withMember(member)
-                .withDateTime(LocalDateTime.now())
-                .build()
+            BodyBuildingSectorEntry().apply {
+                this.member = member
+                this.dateTime = LocalDateTime.now()
+            }
         )
         return member
     }
+
 
     fun getMemberBodyBuildingEntries(memberId: Long, monthNumber: Int): List<LocalDateTime> {
         return bodyBuildingSectorEntryRepository.findByMemberIdAndMonth(memberId, monthNumber)
