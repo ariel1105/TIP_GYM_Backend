@@ -15,8 +15,11 @@ import com.example.gymapp.repository.VoucherRepository
 import com.example.gymapp.utils.BodyBuildingSectorEntryBuilder
 import com.example.gymapp.utils.BodyBuildingSubscriptionBuilder
 import com.example.gymapp.utils.BodyBuildingSubscriptionDTO
+import com.example.gymapp.utils.HaveAlreadyEntryBodyBuildingException
 import com.example.gymapp.utils.MemberDTO
+import com.example.gymapp.utils.NoDaysLeftInBodyBuildingSubscriptionException
 import com.example.gymapp.utils.NoRemainingClassesException
+import com.example.gymapp.utils.NonActiveBodyBuildingSubscriptionException
 import com.example.gymapp.utils.VoucherRequestDTO
 import com.example.gymapp.utils.VoucherResponseDTO
 import jakarta.transaction.Transactional
@@ -189,33 +192,22 @@ class MemberService: UserDetailsService{
 //    }
     fun registerEntryBodyBuildingSector(memberId: Long): Member {
         val member = memberRepository.findById(memberId).orElseThrow()
-
         val today = LocalDate.now()
-        println("📆 Fecha actual: $today")
-        val subscriptions = bodyBuildingSubscriptionRepository.findAll()
-            println("🔍 Todas las suscripciones: ${subscriptions.map { it.member?.id to it.acquisitionDate to it.dueDate }}")
+        //valida suscripcion activa existente
+        val subscription = bodyBuildingSubscriptionRepository.findActiveSubscriptionByMemberId(memberId)
+            ?:throw NonActiveBodyBuildingSubscriptionException()
 
-        // Buscar suscripción activa
-        val subscription = bodyBuildingSubscriptionRepository
-            .findByMemberAndAcquisitionDateLessThanEqualAndDueDateGreaterThanEqual(member, today, today)
-            ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "El miembro no tiene una suscripción activa")
-        // Fechas para la semana actual (lunes a domingo)
         val startOfWeek = today.with(DayOfWeek.MONDAY).atStartOfDay()
-        val endOfWeek = today.with(DayOfWeek.SUNDAY).atTime(LocalTime.MAX)
-        // Buscar todos los ingresos del miembro esta semana
-        val ingresos = bodyBuildingSectorEntryRepository.findByMemberAndDateTimeBetween(member, startOfWeek, endOfWeek)
-
-        // Ver cuántos días distintos ya ingresó esta semana
-        val diasDistintos = ingresos.map { it.dateTime!!.toLocalDate() }.toSet().size
-
-        val yaIngresoHoy = ingresos.any { it.dateTime!!.toLocalDate() == today }
-            if (yaIngresoHoy) {
-                throw ResponseStatusException(HttpStatus.FORBIDDEN, "Ya registraste un ingreso hoy")
-            }
-        if (diasDistintos >= (subscription.daysPerWeek ?: 0)) {
-                throw ResponseStatusException(HttpStatus.FORBIDDEN, "El miembro ya ha ingresado todos los días correspondientes a esta semana")
-            }
-        // Registrar el nuevo ingreso
+        val entries = bodyBuildingSectorEntryRepository.findByMemberAndDateTimeAfterOrderByDateTimeDesc(member, startOfWeek)
+        val haveAlreadyEntryToday = entries.firstOrNull()?.dateTime?.toLocalDate() == today
+        //valida el ingreso en el dia (no debe registrar dos ingresos en el mismo dia)
+        if (haveAlreadyEntryToday) {
+            throw HaveAlreadyEntryBodyBuildingException()
+        }
+        //valida que no haya llegado al limite
+        if (entries.size == (subscription.daysPerWeek ?: 0)) {
+            throw NoDaysLeftInBodyBuildingSubscriptionException()
+        }
         bodyBuildingSectorEntryRepository.save(
             BodyBuildingSectorEntry().apply {
                 this.member = member

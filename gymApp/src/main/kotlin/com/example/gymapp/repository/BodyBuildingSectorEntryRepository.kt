@@ -16,10 +16,9 @@ interface BodyBuildingSectorEntryRepository : JpaRepository<BodyBuildingSectorEn
           AND FUNCTION('MONTH', b.dateTime) = :month
     """)
     fun findByMemberIdAndMonth(@Param("memberId") memberId: Long, @Param("month") month: Int): List<LocalDateTime>
-    fun findByMemberAndDateTimeBetween(
+    fun findByMemberAndDateTimeAfterOrderByDateTimeDesc(
         member: Member,
-        start: LocalDateTime,
-        end: LocalDateTime
+        start: LocalDateTime
     ): List<BodyBuildingSectorEntry>
 
 
