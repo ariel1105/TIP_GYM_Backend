@@ -21,8 +21,8 @@ class MemberBuilder(){
         val member = Member()
         member.id = id
         member.name = name
-        member.password = password
-        member.username = username
+        member.passwordField = password
+        member.usernameField = username
         return member
     }
 

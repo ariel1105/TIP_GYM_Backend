@@ -118,11 +118,7 @@ class MemberController {
         )
     }
 
-    @PostMapping("/bodyBuilding/registerEntry")
-    fun registerEntry(@RequestParam memberId: Long): String{
-        val member = memberService.registerEntryBodyBuildingSector(memberId)
-        return "Bienvenido ${member.name}"
-    }
+
 
     @GetMapping("/bodyBuilding/entries")
     fun getMemberBodyBuildingEntries(request: HttpServletRequest, @RequestParam monthNumber: Int): List<LocalDateTime> {

@@ -36,12 +36,15 @@ class JwtAuthenticationFilter: OncePerRequestFilter() {
         val username: String = jwtService.extractUsername(token)
         if(SecurityContextHolder.getContext().authentication == null){
             val userDetails: UserDetails = userDetailsServiceImpl.loadUserByUsername(username)
+            println("Token válido para usuario: ${userDetails.username}")
+            println("Authorities: ${userDetails.authorities}")
             if(jwtService.isValid(token, userDetails)){
                 val authToken = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
                 authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication = authToken
             }
         }
+
         filterChain.doFilter(request, response)
     }
 }

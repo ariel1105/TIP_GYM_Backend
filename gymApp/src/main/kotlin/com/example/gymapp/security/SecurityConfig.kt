@@ -33,6 +33,7 @@ class SecurityConfig {
             .csrf { it.disable() }
             .headers { header -> header.frameOptions { it.disable() }}
             .authorizeHttpRequests {
+                it.requestMatchers("/admin/**").hasAuthority("ADMIN")
                 it.requestMatchers("/login/**", "/register/**", "/activities", "/turns/**", "/ws/**").permitAll() }
             .authorizeHttpRequests { it.anyRequest().authenticated() }
 //            .authorizeHttpRequests { conf ->

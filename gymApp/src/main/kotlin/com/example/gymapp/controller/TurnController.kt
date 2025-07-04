@@ -18,7 +18,6 @@ import java.time.LocalDate
 @RestController
 class TurnController (
     private val turnService: TurnService,
-    private val turnNotificationSender: TurnNotificationSender
 ) {
 
     @GetMapping("/turns/{activityId}")
@@ -35,12 +34,5 @@ class TurnController (
         }
     }
 
-    @PostMapping("/turns/schedule/{activityId}")
-    fun scheduleTurns(@PathVariable activityId: String, @RequestBody body: List<ScheduleTurnDTO>): List<TurnDTO>{
-        val turns = turnService.scheduleTurns(activityId.toLong(), body).map {
-            TurnDTO(it.id!!, it.datetime!!, it.capacity, it.enrolled, it.activity!!.name!!, it.activity!!.id)
-        }
-        turnNotificationSender.notifyTurnsScheduled(activityId.toLong(), turns)
-        return turns
-    }
+
 }

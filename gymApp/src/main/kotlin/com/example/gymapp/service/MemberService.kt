@@ -12,7 +12,6 @@ import com.example.gymapp.repository.MemberRepository
 import com.example.gymapp.repository.RegistrationRepository
 import com.example.gymapp.repository.TurnRepository
 import com.example.gymapp.repository.VoucherRepository
-import com.example.gymapp.utils.BodyBuildingSectorEntryBuilder
 import com.example.gymapp.utils.BodyBuildingSubscriptionBuilder
 import com.example.gymapp.utils.BodyBuildingSubscriptionDTO
 import com.example.gymapp.utils.HaveAlreadyEntryBodyBuildingException
@@ -24,7 +23,6 @@ import com.example.gymapp.utils.VoucherRequestDTO
 import com.example.gymapp.utils.VoucherResponseDTO
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
@@ -32,11 +30,9 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
-import org.springframework.web.server.ResponseStatusException
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import kotlin.jvm.optionals.getOrNull
 
 @Service
@@ -89,7 +85,7 @@ class MemberService: UserDetailsService{
             }
         return MemberDTO(
             member!!.name,
-            member.username,
+            member.usernameField,
             member.id,
             registrations,
             vouchers,
@@ -224,11 +220,11 @@ class MemberService: UserDetailsService{
 
 
     override fun loadUserByUsername(username: String?): UserDetails? {
-        val member: Member = memberRepository.findByUsername(username!!).getOrNull()
+        val member: Member = memberRepository.findByUsernameField(username!!).getOrNull()
             ?: throw UsernameNotFoundException("User with user $username does not exist.")
 
-        val authorities: Set<GrantedAuthority> = listOf(SimpleGrantedAuthority("ROLE_USER")).toSet()
-        return User(member.username, member.password, true, true, true, true, authorities)
+        val authorities: Set<GrantedAuthority> = listOf(SimpleGrantedAuthority(member.role)).toSet()
+        return User(member.usernameField, member.passwordField, true, true, true, true, authorities)
     }
 
 }

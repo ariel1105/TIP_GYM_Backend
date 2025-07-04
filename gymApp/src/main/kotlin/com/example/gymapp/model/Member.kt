@@ -1,19 +1,18 @@
 package com.example.gymapp.model
 
-import com.example.gymapp.utils.NoRemainingClassesException
-import com.example.gymapp.utils.NonOwnVoucherException
 import com.example.gymapp.utils.VoucherBuilder
-import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.*
-import jdk.jfr.DataAmount
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 
 
 @Entity
-class Member {
+class Member : UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -21,9 +20,12 @@ class Member {
 
     @Column(nullable = false)
     var name:String? = null
-    @Column(nullable = false, unique = true)
-    var username:String? = null
-    var password:String? = null
+    @Column(name="username", nullable = false, unique = true)
+    var usernameField:String? = null
+    @Column(name="password")
+    var passwordField:String? = null
+    @Column
+    var role: String = "USER"
 
     @OneToMany(mappedBy = "member", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     var vouchers: MutableList<Voucher> = mutableListOf()
@@ -65,4 +67,17 @@ class Member {
         turn.remove(this)
         return this.acquire(turn.activity!!, 1, acquisitionWay = "CANCELACIÓN DE TURNO")
     }
+
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> =
+        mutableListOf(SimpleGrantedAuthority(role))
+
+    override fun getPassword(): String? {
+        return passwordField
+    }
+
+    override fun getUsername(): String? {
+        return usernameField
+    }
+
+
 }

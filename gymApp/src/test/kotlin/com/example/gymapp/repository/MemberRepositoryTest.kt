@@ -1,6 +1,5 @@
 package com.example.gymapp.repository
 
-import com.example.gymapp.model.Member
 import com.example.gymapp.utils.ActivityBuilder
 import com.example.gymapp.utils.MemberBuilder
 import com.example.gymapp.utils.RegistrationBuilder
@@ -34,10 +33,10 @@ class MemberRepositoryTest {
             .build()
         memberRepository.save(member)
 
-        val found = memberRepository.findByUsername("username")
+        val found = memberRepository.findByUsernameField("username")
 
         assertThat(found).isPresent
-        assertThat(found.get().username).isEqualTo("username")
+        assertThat(found.get().usernameField).isEqualTo("username")
     }
 
     @Test

@@ -19,7 +19,8 @@ class JwtService {
         var token: String = Jwts
             .builder()
             //.subject(user.username)
-            .setSubject(user.username)
+            .setSubject(user.usernameField)
+            .claim("role", user.role)
             .claim("id", user.id)
             .setIssuedAt(Date(System.currentTimeMillis()))
             .setExpiration(Date(System.currentTimeMillis() + 24*60*60*1000))
