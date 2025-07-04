@@ -191,18 +191,18 @@ class MemberService: UserDetailsService{
         val today = LocalDate.now()
         //valida suscripcion activa existente
         val subscription = bodyBuildingSubscriptionRepository.findActiveSubscriptionByMemberId(memberId)
-            ?:throw NonActiveBodyBuildingSubscriptionException()
+            ?:throw NonActiveBodyBuildingSubscriptionException(member.username!!)
 
         val startOfWeek = today.with(DayOfWeek.MONDAY).atStartOfDay()
         val entries = bodyBuildingSectorEntryRepository.findByMemberAndDateTimeAfterOrderByDateTimeDesc(member, startOfWeek)
         val haveAlreadyEntryToday = entries.firstOrNull()?.dateTime?.toLocalDate() == today
         //valida el ingreso en el dia (no debe registrar dos ingresos en el mismo dia)
         if (haveAlreadyEntryToday) {
-            throw HaveAlreadyEntryBodyBuildingException()
+            throw HaveAlreadyEntryBodyBuildingException(member.username!!)
         }
         //valida que no haya llegado al limite
         if (entries.size == (subscription.daysPerWeek ?: 0)) {
-            throw NoDaysLeftInBodyBuildingSubscriptionException()
+            throw NoDaysLeftInBodyBuildingSubscriptionException(member.username!!)
         }
         bodyBuildingSectorEntryRepository.save(
             BodyBuildingSectorEntry().apply {
