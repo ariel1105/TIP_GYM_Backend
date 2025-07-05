@@ -176,16 +176,6 @@ class MemberService: UserDetailsService{
         )
     }
 
-//    fun registerEntryBodyBuildingSector(memberId: Long): Member {
-//        val member = memberRepository.findById(memberId).orElseThrow()
-//        bodyBuildingSectorEntryRepository.save(
-//            BodyBuildingSectorEntryBuilder()
-//                .withMember(member)
-//                .withDateTime(LocalDateTime.now())
-//                .build()
-//        )
-//        return member
-//    }
     fun registerEntryBodyBuildingSector(memberId: Long): Member {
         val member = memberRepository.findById(memberId).orElseThrow()
         val today = LocalDate.now()

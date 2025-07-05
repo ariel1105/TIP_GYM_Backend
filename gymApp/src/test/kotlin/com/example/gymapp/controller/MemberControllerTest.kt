@@ -34,7 +34,7 @@ class MemberControllerTest {
     @Test
     fun `should return member info`() {
         val memberId = 1L
-        val expectedDTO = MemberDTO("member", "member123", memberId, listOf(), listOf())
+        val expectedDTO = MemberDTO("member", "member123", memberId, listOf(), listOf(), setOf(),null)
         whenever(request.getHeader("Authorization")).thenReturn("Bearer token")
         whenever(jwtService.extractId("Bearer token")).thenReturn(memberId.toString())
         whenever(memberService.getMember(memberId)).thenReturn(expectedDTO)

@@ -18,11 +18,7 @@ interface BodyBuildingSubscriptionRepository : JpaRepository<BodyBuildingSubscri
         @Param("memberId") memberId: Long,
         @Param("today") today: LocalDate = LocalDate.now()
     ): BodyBuildingSubscription?
-    fun findByMemberAndAcquisitionDateLessThanEqualAndDueDateGreaterThanEqual(
-        member: Member,
-        acquisitionDate: LocalDate,
-        dueDate: LocalDate
-    ): BodyBuildingSubscription?
+
 
 
 }

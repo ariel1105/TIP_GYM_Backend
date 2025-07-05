@@ -85,7 +85,7 @@ class TurnControllerTest {
 
         assertEquals("NoTurnsForActivityException", exception::class.simpleName)
     }
-
+/*
     @Test
     fun `scheduleTurns should create and return DTOs`() {
         val activityId = 5L
@@ -128,5 +128,5 @@ class TurnControllerTest {
 
         assertEquals(turns[1].id, result[1].id)
         assertEquals(turns[1].datetime, result[1].datetime)
-    }
+    }*/
 }

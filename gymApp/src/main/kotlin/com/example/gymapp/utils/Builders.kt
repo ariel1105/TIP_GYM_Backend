@@ -54,6 +54,7 @@ class TurnBuilder {
     private var capacity: Int = 0
     private var activity: Activity? = null
     private var enrolled: Int = 0
+    private var registrations: MutableList<Registration> = mutableListOf()
 
     fun build(): Turn {
         val turn = Turn()
@@ -62,6 +63,7 @@ class TurnBuilder {
         turn.capacity = capacity
         turn.activity = activity
         turn.enrolled = enrolled
+        turn.registrations = registrations
         return turn
     }
 
@@ -70,6 +72,9 @@ class TurnBuilder {
     fun withCapacity(capacity: Int) = apply { this.capacity = capacity }
     fun withActivity(activity: Activity) = apply { this.activity = activity }
     fun withEnrolled(enrolled: Int) = apply { this.enrolled = enrolled }
+    fun withRegistrations(registrations: List<Registration>) = apply {
+        this.registrations = registrations.toMutableList()
+    }
 }
 
 class VoucherBuilder {

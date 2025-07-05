@@ -11,4 +11,4 @@ class MemberNotRegisteredInTurnException() : RuntimeException("No estas registra
 class PassedTimeOnTurnException() : RuntimeException("Ya pasó el tiempo límite para la cancelación del turno")
 class NonActiveBodyBuildingSubscriptionException(val username: String): RuntimeException("$username no tenes una suscripcion activa")
 class HaveAlreadyEntryBodyBuildingException(val username: String): RuntimeException("$username Ya registraste un ingreso hoy")
-class NoDaysLeftInBodyBuildingSubscriptionException(val username: String): RuntimeException("$username ya ingresaste todos los días correspondientes a tu suscripcion")
+class NoDaysLeftInBodyBuildingSubscriptionException(val username: String): RuntimeException("$username ya ingresaste todos los dias correspondientes a tu suscripcion")

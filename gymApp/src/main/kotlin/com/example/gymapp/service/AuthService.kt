@@ -46,6 +46,7 @@ class AuthService {
                 )
             )
         }catch (e: Exception){
+            print(e.message)
             throw IllegalArgumentException("Credenciales inválidas")
         }
         val user: Member = userRepository.findByUsernameField(loginDTO.username).get()

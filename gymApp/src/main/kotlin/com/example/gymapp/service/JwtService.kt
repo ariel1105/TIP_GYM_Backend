@@ -18,7 +18,6 @@ class JwtService {
     fun generateToken(user: Member): String{
         var token: String = Jwts
             .builder()
-            //.subject(user.username)
             .setSubject(user.usernameField)
             .claim("role", user.role)
             .claim("id", user.id)

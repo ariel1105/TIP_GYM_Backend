@@ -23,7 +23,7 @@ class TurnService {
     lateinit var activityRepository: ActivityRepository
 
     fun getTurnsActivity(activityId: Long): List<Turn> {
-        var result = turnRepository.findByActivityIdAndDatetimeAfter(activityId)
+        val result = turnRepository.findByActivityIdAndDatetimeAfter(activityId)
         if(result.isEmpty()){ throw NoTurnsForActivityException() }
         return result
     }
